@@ -1,24 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch } from 'react-router-dom'
+import './App.css'
+
+import { constantRoutes, asyncRoutes } from '@/router'
+
+const routes = [...constantRoutes, ...asyncRoutes];
+
+// 用于路由递归，生产所有的路由配置Route
+const recursiveRoute = (routes=[]) => {
+  return routes.map((route, index) => {
+    return <Route path={route.path} key={index}>
+      {
+        !route.children ? <route.component /> : <route.component>
+          <Switch>
+            { recursiveRoute(route.children) }
+          </Switch>
+        </route.component>
+      }
+    </Route>
+  })
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Switch>
+        { recursiveRoute(routes) }
+      </Switch>
     </div>
   );
 }

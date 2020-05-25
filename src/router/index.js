@@ -102,9 +102,9 @@ export const asyncRoutes = [
       }
     ]
   },
-  // componentsRouter,
-  // tableRouter,
-  // dialogRouter,
-  // formRouter,
-  // nestedRouter
+  componentsRouter,
+  tableRouter,
+  dialogRouter,
+  formRouter,
+  nestedRouter
 ]

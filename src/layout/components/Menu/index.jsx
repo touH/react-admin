@@ -1,7 +1,9 @@
 import React from "react";
 import { Menu } from 'antd';
 
-const { SubMenu, Item } = Menu
+import './index.scss'
+
+const { SubMenu } = Menu
 
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
@@ -51,13 +53,15 @@ class BaseMenu extends React.PureComponent {
 
   render() {
     const { routes } = this.props
-    return <Menu
-      theme="dark"
-      mode="inline"
-      defaultSelectedKeys={['1']}
-    >
-      {this.getNavMenuItems(routes)}
-    </Menu>;
+    return <>
+      <Menu
+        theme="light"
+        mode="inline"
+        defaultSelectedKeys={['/home/index']}
+      >
+        {this.getNavMenuItems(routes)}
+      </Menu>
+    </>;
   }
 }
 

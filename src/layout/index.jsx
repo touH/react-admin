@@ -5,8 +5,8 @@ import './index.scss'
 
 import { constantRoutes, asyncRoutes } from '@/router'
 
-import _Menu from './components/Menu'
-import  _Header from './components/Header'
+import MenuComponent from './components/Menu'
+import  HeaderComponent from './components/Header'
 
 const { Header, Sider, Content } = Layout;
 
@@ -18,14 +18,14 @@ export default (props) => {
   return <div className='layout'>
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <_Menu routes={routes} />
+        <MenuComponent routes={routes} />
       </Sider>
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
           style={{ padding: 0 }}
         >
-          <_Header collapsed={collapsed} setCollapsed={setCollapsed} />
+          <HeaderComponent collapsed={collapsed} setCollapsed={setCollapsed} />
         </Header>
         <Content
           className="site-layout-background"

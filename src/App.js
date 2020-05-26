@@ -21,7 +21,7 @@ const recursiveRoute = (routes=[]) => {
   })
 }
 
-function App() {
+function App(props) {
   return (
     <div className='App'>
       <Switch>

@@ -1,4 +1,3 @@
-import React from "react";
 import Login from '@/pages/login'
 import Layout from '@/layout'
 import _404 from '@/pages/error-page/404'

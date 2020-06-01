@@ -23,37 +23,37 @@ export default {
   },
   children: [
     {
-      path: 'dynamic-table',
+      path: '/table/dynamic-table',
       component: DynamicTable,
       name: 'DynamicTable',
       meta: { title: '选择列' }
     },
     {
-      path: 'page-table',
+      path: '/table/page-table',
       component: PageTable,
       name: 'PageTable',
       meta: { title: '分页 Table' }
     },
     {
-      path: 'drag-table',
+      path: '/table/drag-table',
       component: DragTable,
       name: 'DragTable',
       meta: { title: '拖拽 Table' }
     },
     {
-      path: 'inline-edit-table',
+      path: '/table/inline-edit-table',
       component: InlineEditTable,
       name: 'InlineEditTable',
       meta: { title: 'Table 内编辑' }
     },
     {
-      path: 'scroll-table',
+      path: '/table/scroll-table',
       component: ScrollTable,
       name: 'ScrollTable',
       meta: { title: '滚动加载' }
     },
     {
-      path: 'complex-table',
+      path: '/table/complex-table',
       component: ComplexTable,
       name: 'ComplexTable',
       meta: { title: '综合 Table' }

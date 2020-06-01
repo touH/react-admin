@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from 'prop-types';
+import { withRouter } from "react-router";
 import { Menu } from 'antd';
 
 import './index.scss'
@@ -26,6 +28,14 @@ const getMenuItem = (children=[], route) => {
 
 class BaseMenu extends React.PureComponent {
 
+  static propTypes = {
+    routes: PropTypes.array
+  }
+
+  state = {
+    openKeys: []
+  }
+
   // 返回数组，组件集合，即[SubMenu, Item, ...], 用于在Menu中显示
   getNavMenuItems = (routes=[]) => {
     return routes.filter(route => !route.hidden).map(route => this.getSubMenuOrItem(route))
@@ -44,12 +54,40 @@ class BaseMenu extends React.PureComponent {
     } else {
       // Item 的 路由信息
       let onlyOneRoute = getMenuItem(route.children, route);
-      return <Menu.Item key={onlyOneRoute.path} icon={getIcon(onlyOneRoute)} >{ onlyOneRoute.meta && onlyOneRoute.meta.title }</Menu.Item>
+      return <Menu.Item key={onlyOneRoute.path} icon={getIcon(onlyOneRoute)} onClick={route => this.handleClickItem(route)}>{ onlyOneRoute.meta && onlyOneRoute.meta.title }</Menu.Item>
     }
   }
 
   // 返回一个布尔， true：Submenu，false：Item
   isSubMenuOrItem = route => !!(route.meta && route.meta.isSubmenu)
+
+  // 点击 Item，获取页面
+  handleClickItem = (route) => {
+    const { history } = this.props;
+    history.push(route.key)
+  }
+
+  onOpenChange = openKeys => {
+    const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // 得到 菜单中是 Submenu 的菜单集合，用于点击菜单，收起其他展开的所有菜单，排除子菜单的Submenu
+    const getRootSubmenuKeys = routes => routes.filter(
+      route => !route.hidden && route.meta && route.meta.isSubmenu
+    ).map(route => route.path)
+
+// --------------------------------------------------------------------------------------------------------------------
+    console.log(openKeys, latestOpenKey, getRootSubmenuKeys(this.props.routes),  getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey))
+
+    if(getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey) === -1) {
+      this.setState({ openKeys });
+    } else {
+      this.setState({
+        openKeys: latestOpenKey ? [latestOpenKey] : [],
+      });
+    }
+
+  }
 
   render() {
     const { routes } = this.props
@@ -58,6 +96,8 @@ class BaseMenu extends React.PureComponent {
         theme="light"
         mode="inline"
         defaultSelectedKeys={['/home/index']}
+        openKeys={this.state.openKeys}
+        onOpenChange={this.onOpenChange}
       >
         {this.getNavMenuItems(routes)}
       </Menu>
@@ -65,4 +105,4 @@ class BaseMenu extends React.PureComponent {
   }
 }
 
-export default BaseMenu
+export default withRouter(BaseMenu)

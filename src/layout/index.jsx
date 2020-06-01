@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Switch } from 'react-router-dom'
 import { Layout } from 'antd';
+import { createRoute } from '@/App.js'
 
 import './index.scss'
 
@@ -35,7 +37,11 @@ export default (props) => {
             minHeight: 280,
           }}
         >
-          {props.children}
+          {/*{props.children}*/}
+          <Switch>
+            { createRoute(props.route.children) }
+          </Switch>
+
         </Content>
       </Layout>
     </Layout>

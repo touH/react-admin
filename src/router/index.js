@@ -38,6 +38,22 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/404',
+    component: _404,
+    name: '_404',
+    hidden: true
+  },
+  {
+    path: '/500',
+    component: _500,
+    name: '_500',
+    hidden: true
+  }
+];
+
+// 需要根据用户角色动态加载的路由，即权限判断
+export const asyncMenuRoutes = [
+  {
     path: '/home',
     component: Layout,
     redirect: '/home/index',
@@ -54,22 +70,6 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/404',
-    component: _404,
-    name: '_404',
-    hidden: true
-  },
-  {
-    path: '/500',
-    component: _500,
-    name: '_500',
-    hidden: true
-  }
-];
-
-// 需要根据用户角色动态加载的路由，即权限判断
-export const asyncRoutes = [
   {
     path: '/permission',
     component: Layout,

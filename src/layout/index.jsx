@@ -5,15 +5,15 @@ import { createRoute } from '@/App.js'
 
 import './index.scss'
 
-import { constantRoutes, asyncRoutes } from '@/router'
+import { constantRoutes, asyncMenuRoutes } from '@/router'
 
 import MenuComponent from './components/Menu'
 import  HeaderComponent from './components/Header'
 
 const { Header, Sider, Content } = Layout;
 
-export default (props) => {
-  const routes = [...constantRoutes, ...asyncRoutes];
+export default props => {
+  const routes = [...constantRoutes, ...asyncMenuRoutes];
 
   const [collapsed, setCollapsed] = useState(false)
 

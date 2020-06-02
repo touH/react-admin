@@ -2,9 +2,9 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom'
 import './App.css'
 
-import { constantRoutes, asyncRoutes } from '@/router'
+import { constantRoutes, asyncMenuRoutes } from '@/router'
 
-const routes = [...constantRoutes, ...asyncRoutes];
+const routes = [...constantRoutes, ...asyncMenuRoutes];
 
 // 用于路由递归，生产所有的路由配置Route
 const recursiveRoute = (routes=[]) => {
@@ -27,8 +27,9 @@ function App() {
     <div className='App'>
       <Switch>
         <Route exact path='/' render={() => <Redirect to='/home/index' /> }  />
+
         {/*{ recursiveRoute(routes) }*/}
-        { createRoute(routes) }
+        { createRoute(routes) /* /login、/redirect、/404、/500 等 hidden */ }
       </Switch>
     </div>
   );

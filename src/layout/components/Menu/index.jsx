@@ -63,11 +63,15 @@ class BaseMenu extends React.PureComponent {
 
   // 点击 Item，获取页面
   handleClickItem = (route) => {
-    const { history } = this.props;
+    const { history, location } = this.props;
+    // 点击当前 Item 不进行重复
+    if(location.pathname === route.key) return;
     history.push(route.key)
   }
 
-  onOpenChange = openKeys => {
+  // 根 Submenu 只会展开一个
+  onOpenChange = (openKeys=[]) => {
+    // 路径 or undefined
     const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -77,16 +81,15 @@ class BaseMenu extends React.PureComponent {
     ).map(route => route.path)
 
 // --------------------------------------------------------------------------------------------------------------------
-    console.log(openKeys, latestOpenKey, getRootSubmenuKeys(this.props.routes),  getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey))
-
+    // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
     if(getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys });
     } else {
+      // 展开有路径，只会有一个 [path]  or  收起 []
       this.setState({
         openKeys: latestOpenKey ? [latestOpenKey] : [],
       });
     }
-
   }
 
   render() {

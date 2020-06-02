@@ -1,5 +1,3 @@
-import Layout from '@/layout'
-
 import {
   WindowsOutlined
 } from '@ant-design/icons';
@@ -8,7 +6,6 @@ import BaseForm from '@/pages/form/base-form'
 
 export default {
   path: '/form',
-  component: Layout,
   redirect: '/form/base-form',
   name: 'Form',
   meta: {

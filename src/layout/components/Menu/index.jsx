@@ -98,7 +98,7 @@ class BaseMenu extends React.PureComponent {
       <Menu
         theme="light"
         mode="inline"
-        defaultSelectedKeys={['/home/index']}
+        defaultSelectedKeys={['/app/home/index']}
         openKeys={this.state.openKeys}
         onOpenChange={this.onOpenChange}
       >

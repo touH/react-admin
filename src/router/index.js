@@ -26,17 +26,17 @@ export const constantRoutes = [
     name: 'Login',
     hidden: true
   },
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: Redirect
-      }
-    ]
-  },
+  // {
+  //   path: '/redirect',
+  //   component: Layout,
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '/redirect/:path(.*)',
+  //       component: Redirect
+  //     }
+  //   ]
+  // },
   {
     path: '/404',
     component: _404,
@@ -51,28 +51,35 @@ export const constantRoutes = [
   }
 ];
 
+// 因为前面<Route> 路径是以 /app 前缀开始，为了不在业务中增加前缀，所以主要在该文件中添加, 对菜单的路由中的 name 和 redirect 字段的值，增加 /app 前缀
+const addBasename = (basename, routes) => {
+  routes.forEach(route => {
+    if(route.path) {
+      route.path = basename + route.path
+    }
+    if(route.redirect) {
+      route.redirect = basename + route.redirect
+    }
+    if(route.children && route.children.length) {
+      addBasename(basename, route.children)
+    }
+  })
+  return routes
+}
 // 需要根据用户角色动态加载的路由，即权限判断
-export const asyncMenuRoutes = [
+export const asyncMenuRoutes = addBasename('/app', [
   {
-    path: '/home',
-    component: Layout,
-    redirect: '/home/index',
-    children: [
-      {
-        path: '/home/index',
-        name: 'Home',
-        meta: {
-          title: '首页',
-          icon: WindowsOutlined,
-          affix: true
-        },
-        component: Home,
-      }
-    ]
+    path: '/home/index',
+    name: 'Home',
+    meta: {
+      title: '首页',
+      icon: WindowsOutlined,
+      affix: true
+    },
+    component: Home,
   },
   {
     path: '/permission',
-    component: Layout,
     redirect: '/permission/page',
     name: 'Permission',
     meta: {
@@ -101,9 +108,20 @@ export const asyncMenuRoutes = [
       }
     ]
   },
-  componentsRouter,
-  tableRouter,
-  dialogRouter,
-  formRouter,
-  nestedRouter
-]
+  // componentsRouter,
+  // tableRouter,
+  // dialogRouter,
+  // formRouter,
+  // nestedRouter
+])
+
+// 将 route.js 的树形菜单路由 扩展为 都是同一兄弟级的路由
+export const getExpandMenuRoutes = routes => {
+  return routes.reduce((totalRoutes, route) => {
+    let subs = [];
+    if(route.children && route.children.length) {
+      subs = getExpandMenuRoutes(route.children)
+    }
+    return [...totalRoutes, route, ...subs]
+  }, [])
+}

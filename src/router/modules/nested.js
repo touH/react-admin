@@ -1,5 +1,3 @@
-import Layout from '@/layout'
-
 import {
   WindowsOutlined
 } from '@ant-design/icons';
@@ -14,7 +12,6 @@ import Menu2 from '@/pages/nested/menu2'
 
 export default {
   path: '/nested',
-  component: Layout,
   redirect: '/nested/menu1/menu1-1',
   name: 'Nested',
   meta: {

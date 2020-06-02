@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { Switch } from 'react-router-dom'
+import {Redirect, Route, Switch} from 'react-router-dom'
 import { Layout } from 'antd';
-import { createRoute } from '@/App.js'
 
 import './index.scss'
 
-import { constantRoutes, asyncMenuRoutes } from '@/router'
+import { asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
 
 import MenuComponent from './components/Menu'
 import  HeaderComponent from './components/Header'
 
 const { Header, Sider, Content } = Layout;
 
+// 用于路由递归，生产所有的菜单路由 <Route>
+const renderRoute = (routes=[]) => routes.map(route => <Route
+  exact={route.meta.isSubmenu}    // 如果是一个 Submenu 要严格匹配，  如果不加这个 子路由会被 父路由先匹配，如 /a，/a/b，/a 劫持住了
+  path={ route.path }
+  key={ route.path }
+  render={ props =>
+    route.redirect ? <Redirect to={ route.redirect } /> : route.component && <route.component {...route} {...props} />
+  }
+/>)
+
 export default props => {
-  const routes = [...constantRoutes, ...asyncMenuRoutes];
 
   const [collapsed, setCollapsed] = useState(false)
 
   return <div className='layout'>
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <MenuComponent routes={routes} />
+        <MenuComponent routes={ asyncMenuRoutes } />
       </Sider>
       <Layout className="site-layout">
         <Header
@@ -37,11 +45,9 @@ export default props => {
             minHeight: 280,
           }}
         >
-          {/*{props.children}*/}
           <Switch>
-            { createRoute(props.route.children) }
+            { renderRoute(getExpandMenuRoutes(asyncMenuRoutes)) }
           </Switch>
-
         </Content>
       </Layout>
     </Layout>

@@ -1,5 +1,3 @@
-import Layout from '@/layout'
-
 import {
   WindowsOutlined
 } from '@ant-design/icons';
@@ -13,7 +11,6 @@ import ComplexTable from '@/pages/table/complex-table'
 
 export default {
   path: '/table',
-  component: Layout,
   redirect: '/table/dynamic-table',
   name: 'Table',
   meta: {

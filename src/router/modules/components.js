@@ -1,5 +1,3 @@
-import Layout from '@/layout'
-
 import {
   WindowsOutlined
 } from '@ant-design/icons';
@@ -14,7 +12,6 @@ import DragList from '@/pages/components/drag-list'
 
 export default  {
   path: '/components',
-  component: Layout,
   redirect: '/components/tinymce',
   name: 'Components',
   meta: {

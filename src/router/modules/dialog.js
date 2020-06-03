@@ -1,8 +1,8 @@
+import Loading from '@/components/Loading'
+import Loadable from "react-loadable";
 import {
   WindowsOutlined
 } from '@ant-design/icons';
-
-import DragDialog from '@/pages/dialog/drag-dialog'
 
 export default {
   path: '/dialog',
@@ -16,7 +16,10 @@ export default {
   children: [
     {
       path: '/dialog/drag-dialog',
-      component: DragDialog,
+      component: Loadable({
+        loader: () => import('@/pages/dialog/drag-dialog'),
+        loading: Loading
+      }),
       name: 'DragDialog',
       meta: { title: '拖拽 Dialog' }
     },

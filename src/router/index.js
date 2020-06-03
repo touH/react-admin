@@ -1,12 +1,5 @@
-import Login from '@/pages/login'
-import Layout from '@/layout'
-import _404 from '@/pages/error-page/404'
-import _500 from '@/pages/error-page/500'
-import Home from '@/pages/home'
-import Redirect from '@/pages/redirect'
-
-import PagePermission from '@/pages/permission/page'
-import RolePermission from '@/pages/permission/role'
+import Loadable from 'react-loadable';
+import Loading from '@/components/Loading'
 
 import {
   WindowsOutlined
@@ -19,12 +12,16 @@ import dialogRouter from "./modules/dialog";
 import formRouter from "./modules/form";
 import nestedRouter from "./modules/nested";
 
+
 export const baseName = '/app';
 
 export const constantRoutes = [
   {
     path: '/login',
-    component: Login,
+    component: Loadable({
+      loader: () => import('@/pages/login'),
+      loading: Loading
+    }),
     name: 'Login',
     hidden: true
   },
@@ -41,13 +38,19 @@ export const constantRoutes = [
   // },
   {
     path: '/404',
-    component: _404,
+    component: Loadable({
+      loader: () => import('@/pages/error-page/404'),
+      loading: Loading
+    }),
     name: '_404',
     hidden: true
   },
   {
     path: '/500',
-    component: _500,
+    component: Loadable({
+      loader: () => import('@/pages/error-page/500'),
+      loading: Loading
+    }),
     name: '_500',
     hidden: true
   }
@@ -78,7 +81,10 @@ export const asyncMenuRoutes = addBasename('/app', [
       icon: WindowsOutlined,
       affix: true
     },
-    component: Home,
+    component: Loadable({
+      loader: () => import('@/pages/home'),
+      loading: Loading
+    }),
   },
   {
     path: '/permission',
@@ -93,7 +99,10 @@ export const asyncMenuRoutes = addBasename('/app', [
     children: [
       {
         path: '/permission/page',
-        component: PagePermission,
+        component: Loadable({
+          loader: () => import('@/pages/permission/page'),
+          loading: Loading
+        }),
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
@@ -101,7 +110,10 @@ export const asyncMenuRoutes = addBasename('/app', [
       },
       {
         path: '/permission/role',
-        component: RolePermission,
+        component: Loadable({
+          loader: () => import('@/pages/permission/role'),
+          loading: Loading
+        }),
         name: 'RolePermission',
         meta: {
           title: '角色管理',

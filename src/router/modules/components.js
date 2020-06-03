@@ -1,14 +1,8 @@
+import Loading from '@/components/Loading'
+import Loadable from "react-loadable";
 import {
   WindowsOutlined
 } from '@ant-design/icons';
-
-import Tinymce from '@/pages/components/tinymce'
-import Markdown from '@/pages/components/markdown'
-import JsonEditor from '@/pages/components/json-editor'
-import Upload from '@/pages/components/upload'
-import CountTo from '@/pages/components/count-to'
-import BackToTop from '@/pages/components/back-to-top'
-import DragList from '@/pages/components/drag-list'
 
 export default  {
   path: '/components',
@@ -22,43 +16,64 @@ export default  {
   children: [
     {
       path: '/components/tinymce',
-      component: Tinymce,
+      component: Loadable({
+        loader: () => import('@/pages/components/tinymce'),
+        loading: Loading
+      }),
       name: 'Tinymce',
       meta: { title: 'Tinymce' }
     },
     {
       path: '/components/markdown',
-      component: Markdown,
+      component: Loadable({
+        loader: () => import('@/pages/components/markdown'),
+        loading: Loading
+      }),
       name: 'Markdown',
       meta: { title: 'Markdown' }
     },
     {
       path: '/components/json-editor',
-      component: JsonEditor,
+      component: Loadable({
+        loader: () => import('@/pages/components/json-editor'),
+        loading: Loading
+      }),
       name: 'JsonEditor',
       meta: { title: 'JSON Editor' }
     },
     {
       path: '/components/upload',
-      component: Upload,
+      component: Loadable({
+        loader: () => import('@/pages/components/upload'),
+        loading: Loading
+      }),
       name: 'Upload',
       meta: { title: '文件上传' }
     },
     {
       path: '/components/count-to',
-      component: CountTo,
+      component: Loadable({
+        loader: () => import('@/pages/components/count-to'),
+        loading: Loading
+      }),
       name: 'CountTo',
       meta: { title: '计数' }
     },
     {
       path: '/components/back-to-top',
-      component: BackToTop,
+      component: Loadable({
+        loader: () => import('@/pages/components/back-to-top'),
+        loading: Loading
+      }),
       name: 'BackToTop',
       meta: { title: '回到顶部' }
     },
     {
       path: '/components/drag-list',
-      component: DragList,
+      component: Loadable({
+        loader: () => import('@/pages/components/drag-list'),
+        loading: Loading
+      }),
       name: 'DragList',
       meta: { title: '拖拽 List' }
     },

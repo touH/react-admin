@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {Redirect, Route, Switch} from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
+
 import { Layout } from 'antd';
 
 import './index.scss'
@@ -7,7 +8,7 @@ import './index.scss'
 import { asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
 
 import MenuComponent from './components/Menu'
-import  HeaderComponent from './components/Header'
+import HeaderComponent from './components/Header'
 
 const { Header, Sider, Content } = Layout;
 
@@ -47,6 +48,7 @@ export default props => {
         >
           <Switch>
             { renderRoute(getExpandMenuRoutes(asyncMenuRoutes)) }
+            <Route  path='*' render={() => <Redirect to='/404' /> }  />
           </Switch>
         </Content>
       </Layout>

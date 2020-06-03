@@ -19,6 +19,8 @@ import dialogRouter from "./modules/dialog";
 import formRouter from "./modules/form";
 import nestedRouter from "./modules/nested";
 
+export const baseName = '/app';
+
 export const constantRoutes = [
   {
     path: '/login',
@@ -108,11 +110,11 @@ export const asyncMenuRoutes = addBasename('/app', [
       }
     ]
   },
-  // componentsRouter,
-  // tableRouter,
-  // dialogRouter,
-  // formRouter,
-  // nestedRouter
+  componentsRouter,
+  tableRouter,
+  dialogRouter,
+  formRouter,
+  nestedRouter
 ])
 
 // 将 route.js 的树形菜单路由 扩展为 都是同一兄弟级的路由

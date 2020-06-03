@@ -5,26 +5,12 @@ import { Menu } from 'antd';
 
 import './index.scss'
 
+import { getExpandMenuRoutes } from '@/router'
+
 const { SubMenu } = Menu
 
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
-
-/**
- * @description 获取最后可点击的 菜单Item 的路由信息
- *    1. 当路由配置中有children属性，并且children中路由对象信息，那么取route.children最后一个信息为要显示的信息，后面的route覆盖前面的route信息，取最后一个
- *    2. 当children是个空数组、或者没有children，则就直接取这个 route 信息为要显示的信息
- * @param children  当前Item点击的route信息的children
- * @param route     当前Item点击的route信息
- * @return 最后要显示的route信息
- */
-const getMenuItem = (children=[], route) => {
-  if(children.length) {
-    return children.filter(item => !item.hidden).pop()
-  } else {
-    return route
-  }
-}
 
 class BaseMenu extends React.PureComponent {
 
@@ -33,10 +19,20 @@ class BaseMenu extends React.PureComponent {
   }
 
   state = {
-    openKeys: []
+    openKeys: [],
+    selectedKeys: []
   }
 
-  // 返回数组，组件集合，即[SubMenu, Item, ...], 用于在Menu中显示
+  componentDidMount() {
+    const { location, routes } = this.props;
+    // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
+    this.setState({
+      selectedKeys: [location.pathname],
+      openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
+    })
+  }
+
+  // 返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
   getNavMenuItems = (routes=[]) => {
     return routes.filter(route => !route.hidden).map(route => this.getSubMenuOrItem(route))
   }
@@ -53,19 +49,53 @@ class BaseMenu extends React.PureComponent {
       </SubMenu>
     } else {
       // Item 的 路由信息
-      let onlyOneRoute = getMenuItem(route.children, route);
-      return <Menu.Item key={onlyOneRoute.path} icon={getIcon(onlyOneRoute)} onClick={route => this.handleClickItem(route)}>{ onlyOneRoute.meta && onlyOneRoute.meta.title }</Menu.Item>
+      let onlyOneRoute = this.getMenuItem(route.children, route);
+      return <Menu.Item
+        key={onlyOneRoute.path}
+        icon={getIcon(onlyOneRoute)}
+        onClick={ route => this.handleClickItem(route)}
+      >
+        { onlyOneRoute.meta && onlyOneRoute.meta.title }
+      </Menu.Item>
     }
   }
 
   // 返回一个布尔， true：Submenu，false：Item
   isSubMenuOrItem = route => !!(route.meta && route.meta.isSubmenu)
 
+  /**
+   * @description 获取最后可点击的 菜单Item 的路由信息
+   *    1. 当路由配置中有children属性，并且children中路由对象信息，那么取route.children最后一个信息为要显示的信息，后面的route覆盖前面的route信息，取最后一个
+   *    2. 当children是个空数组、或者没有children，则就直接取这个 route 信息为要显示的信息
+   * @param children  当前Item点击的route信息的children
+   * @param route     当前Item点击的route信息
+   * @return 最后要显示的route信息
+   */
+  getMenuItem = (children=[], route) => {
+    if(children.length) {
+      return children.filter(item => !item.hidden).pop()
+    } else {
+      return route
+    }
+  }
+
+  /**
+   * @description 当页面刷新或初始化时，如果是 Submenu 菜单，对起相关的 Submenu 进行展开
+   * @param pathname: url string, routes: 所有菜单路由
+   * @return Array<string>   [path, path, path]
+   */
+  getOpenKeys = (pathname, routes) => routes.filter(route =>
+    pathname.indexOf(route.path) !== -1 && !!route.meta.isSubmenu
+  ).map(route => route.path)
+
   // 点击 Item，获取页面
   handleClickItem = (route) => {
     const { history, location } = this.props;
     // 点击当前 Item 不进行重复
     if(location.pathname === route.key) return;
+    this.setState({
+      selectedKeys: route.key
+    })
     history.push(route.key)
   }
 
@@ -94,13 +124,14 @@ class BaseMenu extends React.PureComponent {
 
   render() {
     const { routes } = this.props
+    const { selectedKeys, openKeys } = this.state;
     return <>
       <Menu
         theme="light"
         mode="inline"
-        defaultSelectedKeys={['/app/home/index']}
-        openKeys={this.state.openKeys}
+        openKeys={openKeys}
         onOpenChange={this.onOpenChange}
+        selectedKeys={selectedKeys}
       >
         {this.getNavMenuItems(routes)}
       </Menu>

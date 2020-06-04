@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './index.scss'
 
-export default () => {
+import { login } from '@/store/modules/app/action'
+
+const Login = props => {
+
   const onFinish = values => {
     console.log('Received values of form: ', values);
+    props.login()
   };
+
+  useEffect(() => {
+
+  }, [])
 
   return <div className='login-container'>
     <Form
@@ -41,3 +50,15 @@ export default () => {
     </Form>
   </div>;
 }
+
+const mapStateToProps = state => {
+  return {
+    list: []
+  }
+}
+
+const mapDispatchToProps = {
+  login
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

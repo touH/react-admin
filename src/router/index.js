@@ -72,7 +72,7 @@ const addBasename = (basename, routes) => {
   return routes
 }
 // 需要根据用户角色动态加载的路由，即权限判断
-export const asyncMenuRoutes = addBasename('/app', [
+export const asyncMenuRoutes = addBasename(baseName, [
   {
     path: '/home/index',
     name: 'Home',

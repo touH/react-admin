@@ -12,6 +12,7 @@ const { SubMenu } = Menu
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
 
+@withRouter
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
@@ -139,4 +140,4 @@ class BaseMenu extends React.PureComponent {
   }
 }
 
-export default withRouter(BaseMenu)
+export default BaseMenu

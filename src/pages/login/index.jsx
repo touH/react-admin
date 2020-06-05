@@ -5,13 +5,13 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './index.scss'
 
-import { login } from '@/store/modules/app/action'
+import { login } from '@/store/modules/user/action'
 
 const Login = props => {
 
-  const onFinish = values => {
-    console.log('Received values of form: ', values);
-    props.login()
+  const onFinish = userInfo => {
+    console.log('Received values of form: ', userInfo);
+    props.login(userInfo)
   };
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Login = props => {
         name="username"
         rules={[{ required: true, message: 'Please input your Username!' }]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="admin | other" />
       </Form.Item>
       <Form.Item
         name="password"

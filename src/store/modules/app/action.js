@@ -1,7 +1,7 @@
 import { createActions } from 'redux-actions';
 
-export const { login } = createActions({
-  LOGIN: todo => ({ todo }),
+export default createActions({
+  APP: todo => ({ todo }),
   REMOVE_TODO: [
     todo => ({ todo }),
     (todo, warn) => ({ todo, warn }),

@@ -1,7 +1,7 @@
 /**
  * 状态管理
  */
-import { combineReducers, createStore, applyMiddleware } from 'redux'
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-promise';
 
@@ -17,7 +17,23 @@ const reducers = combineReducers({
   [userNamespace]: userReducer
 })
 
-export default createStore(reducers, applyMiddleware(thunkMiddleware, promiseMiddleware))
+// 浏览器redux查看插件
+const reduxDebug = window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
+
+/*
+compose(fn1, fn2):
+  ƒ () {
+    return a(b.apply(void 0, arguments));
+  }
+*/
+
+export default createStore(
+  reducers,
+  compose(
+    applyMiddleware(thunkMiddleware, promiseMiddleware),
+    reduxDebug
+  )
+)
 
 
 

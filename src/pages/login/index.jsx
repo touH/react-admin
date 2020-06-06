@@ -10,8 +10,11 @@ import { login } from '@/store/modules/user/action'
 const Login = props => {
 
   const onFinish = userInfo => {
-    console.log('Received values of form: ', userInfo);
-    props.login(userInfo)
+    console.log('Received values of form: ', userInfo, props);
+    const { history } = props;
+    props.login(userInfo).then(() => {
+      history.push('/')
+    })
   };
 
   useEffect(() => {
@@ -53,7 +56,7 @@ const Login = props => {
 
 const mapStateToProps = state => {
   return {
-    list: []
+    token: state.user.token
   }
 }
 

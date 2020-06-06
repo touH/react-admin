@@ -3,11 +3,11 @@ import { message } from 'antd';
 import { getToken, setToken, removeToken } from '@/utils/token'
 
 //api
-import { request_login } from '@/api/user'
+import { request_login, request_getInfo } from '@/api/user'
 
-export const { login } = createActions({
-  LOGIN: ({ username, password }) => {
-    return new Promise((resolve, reject) => {
+export const { login, getInfo } = createActions({
+  LOGIN: async ({ username, password }) => {
+    return new Promise(resolve => {
       request_login({ username, password }).then(res => {
         const { data } = res;
         if(data.success) {
@@ -21,8 +21,24 @@ export const { login } = createActions({
         }
       }).catch(error => {
         console.log(error)
-        reject(error)
       })
     })
   },
+  GET_INFO: async token => {
+    return new Promise(resolve => {
+      request_getInfo(token).then(res => {
+        let { data } = res;
+        if(data.success) {
+          resolve({
+            roles: data.data.roles,
+            admin: data.data
+          })
+        } else {
+          message.error(data.message);
+        }
+      })
+    }).catch(error => {
+      console.log(error)
+    })
+  }
 }, 'SET_LOGIN_OUT');

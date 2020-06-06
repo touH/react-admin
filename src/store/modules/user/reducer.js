@@ -13,5 +13,13 @@ export const userReducer = handleActions({
   LOGIN(state, action) {
     const { token } = action.payload
     return { ...state, token }
+  },
+  GET_INFO(state, action) {
+    const { roles, admin } = action.payload
+    return {
+      ...state,
+      roles,
+      admin
+    }
   }
 }, initState)

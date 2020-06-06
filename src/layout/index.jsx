@@ -29,7 +29,7 @@ export default props => {
   return <div className='layout'>
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <MenuComponent routes={ asyncMenuRoutes } />
+        <MenuComponent routes={ asyncMenuRoutes } collapsed={collapsed} />
       </Sider>
       <Layout className="site-layout">
         <Header

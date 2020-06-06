@@ -16,21 +16,23 @@ const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : n
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
-    routes: PropTypes.array
+    routes: PropTypes.array,
+    collapsed: PropTypes.bool
   }
 
   state = {
+    defaultOpenKeys: [],
     openKeys: [],
-    selectedKeys: []
+    selectedKeys: [],
   }
 
-  componentDidMount() {
-    const { location, routes } = this.props;
+  // 初始化
+  constructor(props) {
+    super(props);
+    const { location, routes } = props;
     // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
-    this.setState({
-      selectedKeys: [location.pathname],
-      openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
-    })
+    this.state.selectedKeys = [location.pathname];
+    this.state.defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes));
   }
 
   // 返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
@@ -102,6 +104,7 @@ class BaseMenu extends React.PureComponent {
 
   // 根 Submenu 只会展开一个
   onOpenChange = (openKeys=[]) => {
+    console.log(openKeys)
     // 路径 or undefined
     const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
 
@@ -114,6 +117,7 @@ class BaseMenu extends React.PureComponent {
 // --------------------------------------------------------------------------------------------------------------------
     // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
     if(getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey) === -1) {
+      // console.log(111, openKeys)
       this.setState({ openKeys });
     } else {
       // 展开有路径，只会有一个 [path]  or  收起 []
@@ -125,13 +129,14 @@ class BaseMenu extends React.PureComponent {
 
   render() {
     const { routes } = this.props
-    const { selectedKeys, openKeys } = this.state;
+    const { selectedKeys, openKeys, defaultOpenKeys } = this.state;
     return <>
       <Menu
         theme="light"
         mode="inline"
-        openKeys={openKeys}
-        onOpenChange={this.onOpenChange}
+        defaultOpenKeys={defaultOpenKeys}
+        // openKeys={openKeys}
+        // onOpenChange={this.onOpenChange}
         selectedKeys={selectedKeys}
       >
         {this.getNavMenuItems(routes)}

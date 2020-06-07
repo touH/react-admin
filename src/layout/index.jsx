@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { Layout } from 'antd';
@@ -24,19 +24,23 @@ const renderRoute = (routes=[]) => routes.map(route => <Route
 
 export default props => {
 
+  const menuEl = useRef(null);
   const [collapsed, setCollapsed] = useState(false)
 
   return <div className='layout'>
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <MenuComponent routes={ asyncMenuRoutes } collapsed={collapsed} />
+        <MenuComponent {...props} ref={menuEl} routes={ asyncMenuRoutes }  />
       </Sider>
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
           style={{ padding: 0 }}
         >
-          <HeaderComponent collapsed={collapsed} setCollapsed={setCollapsed} />
+          <HeaderComponent collapsed={collapsed} setCollapsed={collapsed => {
+            setCollapsed(collapsed)
+            menuEl.current.setOpenKeys(collapsed)
+          }} />
         </Header>
         <Content
           className="site-layout-background"

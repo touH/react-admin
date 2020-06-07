@@ -12,27 +12,38 @@ const { SubMenu } = Menu
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
 
-@withRouter
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
     routes: PropTypes.array,
-    collapsed: PropTypes.bool
-  }
-
-  state = {
-    defaultOpenKeys: [],
-    openKeys: [],
-    selectedKeys: [],
   }
 
   // 初始化
   constructor(props) {
     super(props);
+
     const { location, routes } = props;
+    const defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
+
     // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
-    this.state.selectedKeys = [location.pathname];
-    this.state.defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes));
+    this.state = {
+      selectedKeys: [location.pathname],
+      openKeys: defaultOpenKeys,
+      collapsedOpenKeys: defaultOpenKeys
+    }
+  }
+
+  setOpenKeys = (collapsed) => {
+    if(collapsed) {
+      this.setState({
+        openKeys: []
+      })
+    } else {
+      const { collapsedOpenKeys } = this.state;
+      this.setState({
+        openKeys: collapsedOpenKeys
+      })
+    }
   }
 
   // 返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
@@ -94,19 +105,24 @@ class BaseMenu extends React.PureComponent {
   // 点击 Item，获取页面
   handleClickItem = (route) => {
     const { history, location } = this.props;
+    const { openKeys } = this.state;
     // 点击当前 Item 不进行重复
     if(location.pathname === route.key) return;
     this.setState({
-      selectedKeys: route.key
+      selectedKeys: [route.key],
+      collapsedOpenKeys: openKeys
     })
     history.push(route.key)
   }
 
   // 根 Submenu 只会展开一个
   onOpenChange = (openKeys=[]) => {
-    console.log(openKeys)
+
+    const { routes } = this.props;
+    const { openKeys: _openKeys } = this.state;
+
     // 路径 or undefined
-    const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+    const latestOpenKey = openKeys.find(key => _openKeys.indexOf(key) === -1);
 
     // --------------------------------------------------------------------------------------------------------------------
     // 得到 菜单中是 Submenu 的菜单集合，用于点击菜单，收起其他展开的所有菜单，排除子菜单的Submenu
@@ -116,7 +132,7 @@ class BaseMenu extends React.PureComponent {
 
 // --------------------------------------------------------------------------------------------------------------------
     // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
-    if(getRootSubmenuKeys(this.props.routes).indexOf(latestOpenKey) === -1) {
+    if(getRootSubmenuKeys(routes).indexOf(latestOpenKey) === -1) {
       // console.log(111, openKeys)
       this.setState({ openKeys });
     } else {
@@ -129,14 +145,13 @@ class BaseMenu extends React.PureComponent {
 
   render() {
     const { routes } = this.props
-    const { selectedKeys, openKeys, defaultOpenKeys } = this.state;
+    const { selectedKeys, openKeys } = this.state;
     return <>
       <Menu
         theme="light"
         mode="inline"
-        defaultOpenKeys={defaultOpenKeys}
-        // openKeys={openKeys}
-        // onOpenChange={this.onOpenChange}
+        openKeys={openKeys}
+        onOpenChange={this.onOpenChange}
         selectedKeys={selectedKeys}
       >
         {this.getNavMenuItems(routes)}

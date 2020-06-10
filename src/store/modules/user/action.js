@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions';
 import { message } from 'antd';
-import { getToken, setToken, removeToken } from '@/utils/token'
+import { setToken } from '@/utils/token'
 
 //api
 import { request_login, request_getInfo } from '@/api/user'

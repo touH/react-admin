@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { withRouter } from "react-router";
 import { Menu } from 'antd';
 
 import './index.scss'
@@ -12,6 +11,10 @@ const { SubMenu } = Menu
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
 
+/*
+ 一开始使用 withRouter 装饰，来获取路由历史信息，但是现在因为父组件使用 ref 的原因，
+ 如果子组件内部还是使用装饰器，使用 ref 会报错，不能使用装饰器装饰组件，所以修改为 通过外部传入 props 的方式来获取路由信息
+ */
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
@@ -29,27 +32,29 @@ class BaseMenu extends React.PureComponent {
     this.state = {
       selectedKeys: [location.pathname],
       openKeys: defaultOpenKeys,
-      collapsedOpenKeys: defaultOpenKeys
     }
   }
 
-  setOpenKeys = (collapsed) => {
+  /**
+   * @description 该函数用于父组件通过点击伸缩按钮，来使菜单伸缩。为什么要这么做？在该组件内部每次菜单伸缩，也会默认触发onOpenChange事件，而每次收缩后openKeys会被默认为[]，在这个过程中会有一闪的显示Submenu的内容，而且菜单伸缩再展开时Submenu也不会展开，因为openKeys为[]。为了解决这个问题，特意使用父组件事件来控制伸缩
+   * @param collapsed: Boolean
+   */
+  setOpenKeys = collapsed => {
     if(collapsed) {
       this.setState({
         openKeys: []
       })
     } else {
-      const { collapsedOpenKeys } = this.state;
+      const { location, routes } = this.props;
+      // 重新计算展开的 Submenu， 因为在这之前变为 [] 了
       this.setState({
-        openKeys: collapsedOpenKeys
+        openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
       })
     }
   }
 
   // 返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
-  getNavMenuItems = (routes=[]) => {
-    return routes.filter(route => !route.hidden).map(route => this.getSubMenuOrItem(route))
-  }
+  getNavMenuItems = (routes=[]) => routes.filter(route => !route.hidden).map(route => this.getSubMenuOrItem(route))
 
   // 判断是 SubMenu 还是 Item， 返回相应的 菜单组件
   getSubMenuOrItem = route => {
@@ -105,12 +110,10 @@ class BaseMenu extends React.PureComponent {
   // 点击 Item，获取页面
   handleClickItem = (route) => {
     const { history, location } = this.props;
-    const { openKeys } = this.state;
     // 点击当前 Item 不进行重复
     if(location.pathname === route.key) return;
     this.setState({
       selectedKeys: [route.key],
-      collapsedOpenKeys: openKeys
     })
     history.push(route.key)
   }

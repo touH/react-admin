@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { Layout } from 'antd';
@@ -9,6 +10,7 @@ import { asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
 
 import MenuComponent from './components/Menu'
 import HeaderComponent from './components/Header'
+import { gettermMenuRoutes } from "../store/getters";
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,7 +24,11 @@ const renderRoute = (routes=[]) => routes.map(route => <Route
   }
 />)
 
-export default props => {
+const AppRoutes = React.memo(({ asyncMenuRoutes }) => {
+  return renderRoute(getExpandMenuRoutes(asyncMenuRoutes))
+})
+
+const LayoutCompoent = props => {
 
   const menuEl = useRef(null);
   const [collapsed, setCollapsed] = useState(false)
@@ -30,14 +36,14 @@ export default props => {
   return <div className='layout'>
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <MenuComponent {...props} ref={menuEl} routes={ asyncMenuRoutes }  />
+        <MenuComponent {...props} ref={ menuEl } routes={ props.menuRoutes }  />
       </Sider>
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
           style={{ padding: 0 }}
         >
-          <HeaderComponent collapsed={collapsed} setCollapsed={collapsed => {
+          <HeaderComponent collapsed={ collapsed } setCollapsed={ collapsed => {
             setCollapsed(collapsed)
             menuEl.current.setOpenKeys(collapsed)
           }} />
@@ -51,7 +57,8 @@ export default props => {
           }}
         >
           <Switch>
-            { renderRoute(getExpandMenuRoutes(asyncMenuRoutes)) }
+            <AppRoutes asyncMenuRoutes={props.menuRoutes} />
+            {/*{ renderRoute(getExpandMenuRoutes(props.menuRoutes)) }*/}
             <Route  path='*' render={() => <Redirect to='/404' /> }  />
           </Switch>
         </Content>
@@ -59,3 +66,14 @@ export default props => {
     </Layout>
   </div>
 }
+
+const mapStateToProps = state => {
+  return {
+    menuRoutes: gettermMenuRoutes(state)
+  }
+}
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutCompoent)

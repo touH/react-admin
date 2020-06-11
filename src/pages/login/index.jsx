@@ -17,9 +17,6 @@ const Login = props => {
     })
   };
 
-  useEffect(() => {
-
-  }, [])
 
   return <div className='login-container'>
     <Form

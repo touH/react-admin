@@ -21,5 +21,8 @@ export const userReducer = handleActions({
       roles,
       admin
     }
+  },
+  RESET_TOKEN(state, action) {
+    return initState
   }
 }, initState)

@@ -1,6 +1,5 @@
 import { createActions } from 'redux-actions';
-import { message } from 'antd';
-import { asyncMenuRoutes } from '@/router'
+import { asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
 
 // 判断该路由菜单是否有权限，无roles字段表示该路由都可访问，有roles字段则和服务端做对比，得到该角色是否有该路由权限
 function hasPermission(roles, route) {
@@ -38,7 +37,8 @@ export const { setRoutes } = createActions({
       accessedRoutes = filterAsyncRoutes(asyncMenuRoutes, roles)
     }
     return {
-      accessedRoutes
+      accessedRoutes,
+      expandAccessedRoutes: getExpandMenuRoutes(accessedRoutes)
     }
   }
 })

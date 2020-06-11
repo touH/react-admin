@@ -15,6 +15,18 @@ import nestedRouter from "./modules/nested";
 
 export const baseName = '/app';
 
+/*
+hidden: 用于表示该路由是否显示与菜单中，即是否是菜单路由，hidden: true为其他路由，false或者不写为菜单路由
+meta: {
+  title: String         菜单标题
+  icon: String          菜单图标
+  roles: Array          角色
+  isSubmenu: Boolean    是否是多级菜单，即是否有子菜单，true是，false不是
+  affix: Boolean        是否在tagsView中默认永远显示，不被删除， 如：让首页默认显示
+  noCache: Boolean      如果设置为true，则表示不需要缓存。主要用于tagsView中，用户缓存。  如果不设置或者false，因为keep-alive的原因会缓存。。
+}
+ */
+
 export const constantRoutes = [
   {
     path: '/login',
@@ -139,3 +151,7 @@ export const getExpandMenuRoutes = routes => {
     return [...totalRoutes, route, ...subs]
   }, [])
 }
+
+
+
+

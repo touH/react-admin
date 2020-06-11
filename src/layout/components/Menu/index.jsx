@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { Menu } from 'antd';
+import { Menu, Layout } from 'antd';
+
 
 import './index.scss'
 
 import { getExpandMenuRoutes } from '@/router'
 
 const { SubMenu } = Menu
+const { Sider } = Layout;
 
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
@@ -19,6 +21,7 @@ class BaseMenu extends React.PureComponent {
 
   static propTypes = {
     routes: PropTypes.array,
+    collapsed: PropTypes.bool
   }
 
   // 初始化
@@ -32,6 +35,18 @@ class BaseMenu extends React.PureComponent {
     this.state = {
       selectedKeys: [location.pathname],
       openKeys: defaultOpenKeys,
+    }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { location } = props;
+    const { selectedKeys } = state;
+    if(location.pathname !== selectedKeys[0]) {
+      return {
+        selectedKeys: [location.pathname]
+      }
+    } else {
+      return null
     }
   }
 
@@ -112,9 +127,6 @@ class BaseMenu extends React.PureComponent {
     const { history, location } = this.props;
     // 点击当前 Item 不进行重复
     if(location.pathname === route.key) return;
-    this.setState({
-      selectedKeys: [route.key],
-    })
     history.push(route.key)
   }
 
@@ -147,9 +159,13 @@ class BaseMenu extends React.PureComponent {
   }
 
   render() {
-    const { routes } = this.props
+    const { routes, collapsed } = this.props
     const { selectedKeys, openKeys } = this.state;
-    return <>
+    return <Sider
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+    >
       <Menu
         theme="light"
         mode="inline"
@@ -159,7 +175,7 @@ class BaseMenu extends React.PureComponent {
       >
         {this.getNavMenuItems(routes)}
       </Menu>
-    </>;
+    </Sider>;
   }
 }
 

@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
 import { connect } from 'react-redux'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
+import { message } from 'antd';
 import path from 'path';
 import './App.css'
 import Layout from '@/layout'
 import { constantRoutes, baseName } from '@/router'
 import { getToken } from '@/utils/token'
-import { getterToken, getterRoles } from './store/getters'
-import { getInfo } from './store/modules/user/action'
+import { getterToken, getterRoles, getterMenuRoutes, getterExpandMenuRoutes } from './store/getters'
+import { getInfo, resetToken } from './store/modules/user/action'
 import { setRoutes } from './store/modules/permission/action'
 
 // 用于路由递归，生产所有的路由配置Route，  之前也可通过 props.children 插槽的方式传递给子组件，这种方式也是可以的
@@ -45,6 +46,11 @@ function App(props) {
           getInfo(token).then(res => {
             const { roles } = res.payload
             setRoutes(roles)
+          }).catch(e => {
+            message.error(e);
+            props.resetToken().then(() => {
+              history.push('/login')
+            });
           })
         }
       }
@@ -55,11 +61,14 @@ function App(props) {
     }
   }, [props.location])
 
+  // 之所以会有这么一句是因为 如果直接渲染 Layout， 一开始store中menuRoutes是[] 的原因，导致路由匹配不到会报错，所以只有当menuRoutes有值时才渲染
+  const App = props.menuRoutes.length ? Layout : null
+
   return (
     <div className='App'>
       <Switch>
         <Route exact path='/' render={() => <Redirect to={path.join(baseName, '/home/index')} /> }  />
-        <Route  path={ baseName } component={ Layout } /> }  />
+        <Route  path={ baseName } component={ App } /> }  />
         { createRoute(constantRoutes) /* 主路由，必显示部分 /login、/redirect、/404、/500 等 hidden */ }
         <Route  path='*' render={() => <Redirect to='/404' /> }  />
       </Switch>
@@ -70,12 +79,15 @@ function App(props) {
 const mapStateToProps = state => {
   return {
     token: getterToken(state),
-    roles: getterRoles(state)
+    roles: getterRoles(state),
+    menuRoutes: getterMenuRoutes(state),
+    expandMenuRoutes: getterExpandMenuRoutes(state)
   }
 }
 const mapDispatchToProps = {
   getInfo,
-  setRoutes
+  setRoutes,
+  resetToken
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

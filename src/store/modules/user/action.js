@@ -1,11 +1,11 @@
 import { createActions } from 'redux-actions';
 import { message } from 'antd';
-import { setToken } from '@/utils/token'
+import { setToken, removeToken } from '@/utils/token'
 
 //api
 import { request_login, request_getInfo } from '@/api/user'
 
-export const { login, getInfo } = createActions({
+export const { login, getInfo, resetToken } = createActions({
   LOGIN: async ({ username, password }) => {
     return new Promise(resolve => {
       request_login({ username, password }).then(res => {
@@ -40,5 +40,9 @@ export const { login, getInfo } = createActions({
     }).catch(error => {
       console.log(error)
     })
-  }
-}, 'SET_LOGIN_OUT');
+  },
+  RESET_TOKEN: () => new Promise(resolve => {
+    removeToken()
+    resolve()
+  })
+}, 'AAAAAAA');

@@ -30,15 +30,16 @@ const LayoutCompoent = React.memo(props => {
 
   const menuEl = useRef(null);
 
-  const [collapsed, setCollapsed] = useState(false)
+  const [ collapsed, setCollapsed ] = useState(false)
 
   return <div className='layout'>
     <Layout>
       <SiderMenu
         {...props}
         ref={ menuEl }
-        collapsed={collapsed}
+        collapsed={ collapsed }
         menuRoutes={ menuRoutes }
+        expandMenuRoutes={ expandMenuRoutes }
       />
       <Layout>
         <Header

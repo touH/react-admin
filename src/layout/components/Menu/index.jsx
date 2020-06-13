@@ -4,8 +4,6 @@ import { Menu, Layout } from 'antd';
 
 import './index.scss'
 
-import { getExpandMenuRoutes } from '@/router'
-
 const { SubMenu } = Menu
 const { Sider } = Layout;
 
@@ -20,6 +18,7 @@ class BaseMenu extends React.PureComponent {
 
   static propTypes = {
     menuRoutes: PropTypes.array,
+    expandMenuRoutes: PropTypes.array,
     collapsed: PropTypes.bool
   }
 
@@ -27,8 +26,8 @@ class BaseMenu extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const { location, menuRoutes } = props;
-    const defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(menuRoutes))
+    const { location, expandMenuRoutes } = props;
+    const defaultOpenKeys = this.getOpenKeys(location.pathname, expandMenuRoutes)
 
     // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
     this.state = {
@@ -37,12 +36,14 @@ class BaseMenu extends React.PureComponent {
     }
   }
 
+  // 菜单路由改变 selectedKeys 相应改变
   static getDerivedStateFromProps(props, state) {
     const { location } = props;
     const { selectedKeys } = state;
     if(location.pathname !== selectedKeys[0]) {
       return {
-        selectedKeys: [location.pathname]
+        selectedKeys: [location.pathname],
+        // openKeys: props.collapsed ? [] : ['/app/permission']
       }
     } else {
       return null
@@ -54,15 +55,16 @@ class BaseMenu extends React.PureComponent {
    * @param collapsed: Boolean
    */
   setOpenKeys = collapsed => {
+    // true 关闭  false 展开
     if(collapsed) {
       this.setState({
         openKeys: []
       })
     } else {
-      const { location, menuRoutes } = this.props;
+      const { location, expandMenuRoutes } = this.props;
       // 重新计算展开的 Submenu， 因为在这之前变为 [] 了
       this.setState({
-        openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(menuRoutes))
+        openKeys: this.getOpenKeys(location.pathname, expandMenuRoutes)
       })
     }
   }

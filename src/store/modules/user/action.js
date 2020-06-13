@@ -24,25 +24,23 @@ export const { login, getInfo, resetToken } = createActions({
       })
     })
   },
-  GET_INFO: async token => {
-    return new Promise(resolve => {
-      request_getInfo(token).then(res => {
-        let { data } = res;
-        if(data.success) {
-          resolve({
-            roles: data.data.roles,
-            admin: data.data
-          })
-        } else {
-          message.error(data.message);
-        }
-      })
-    }).catch(error => {
-      console.log(error)
+  GET_INFO: async token => new Promise(resolve => {
+    request_getInfo(token).then(res => {
+      let { data } = res;
+      if(data.success) {
+        resolve({
+          roles: data.data.roles,
+          admin: data.data
+        })
+      } else {
+        message.error(data.message);
+      }
     })
-  },
+  }).catch(error => {
+    console.log(error)
+  }),
   RESET_TOKEN: () => new Promise(resolve => {
     removeToken()
     resolve()
   })
-}, 'AAAAAAA');
+});

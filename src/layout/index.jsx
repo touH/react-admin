@@ -6,13 +6,11 @@ import { Layout } from 'antd';
 
 import './index.scss'
 
-import {  getExpandMenuRoutes } from '@/router'
-
 import SiderMenu from './components/Menu'
 import GlobalHeader from './components/Header'
 import TagsView from './components/TagsView'
 
-import { getterMenuRoutes } from "../store/getters";
+import { getterMenuRoutes, getterExpandMenuRoutes } from "@/store/getters";
 
 const { Header, Content } = Layout;
 
@@ -26,13 +24,12 @@ const renderRoute = (routes=[]) => routes.map(route => <Route
   }
 />)
 
-const AppRoutes = ({ asyncMenuRoutes }) => {
-  return renderRoute(getExpandMenuRoutes(asyncMenuRoutes))
-}
-
 const LayoutCompoent = React.memo(props => {
 
+  const { menuRoutes, expandMenuRoutes } = props;
+
   const menuEl = useRef(null);
+
   const [collapsed, setCollapsed] = useState(false)
 
   return <div className='layout'>
@@ -41,7 +38,7 @@ const LayoutCompoent = React.memo(props => {
         {...props}
         ref={ menuEl }
         collapsed={collapsed}
-        routes={ props.menuRoutes }
+        menuRoutes={ menuRoutes }
       />
       <Layout>
         <Header
@@ -64,8 +61,7 @@ const LayoutCompoent = React.memo(props => {
           }}
         >
           <Switch>
-            {/*<AppRoutes asyncMenuRoutes={props.menuRoutes} />*/}
-            { renderRoute(getExpandMenuRoutes(props.menuRoutes)) }
+            { renderRoute(expandMenuRoutes) }
             <Route  path='*' render={() => <Redirect to='/404' /> }  />
           </Switch>
         </Content>
@@ -74,11 +70,11 @@ const LayoutCompoent = React.memo(props => {
   </div>
 })
 
-const mapStateToProps = state => {
-  return {
-    menuRoutes: getterMenuRoutes(state)
-  }
-}
+const mapStateToProps = state => ({
+  menuRoutes: getterMenuRoutes(state),
+  expandMenuRoutes: getterExpandMenuRoutes(state),
+})
+
 const mapDispatchToProps = {
 
 }

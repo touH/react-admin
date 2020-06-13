@@ -1,9 +1,5 @@
 import { createActions } from 'redux-actions';
 
-export default createActions({
-  APP: todo => ({ todo }),
-  REMOVE_TODO: [
-    todo => ({ todo }),
-    (todo, warn) => ({ todo, warn }),
-  ],
-}, 'SET_LOGIN_OUT');
+export const { setActiveRoute, setCollapsed } = createActions({
+  SET_ACTIVE_ROUTE: route => ({ route }),
+}, 'SET_COLLAPSED');

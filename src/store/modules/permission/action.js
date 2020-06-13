@@ -1,5 +1,5 @@
 import { createActions } from 'redux-actions';
-import { asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
+import { constantRoutes, asyncMenuRoutes, getExpandMenuRoutes } from '@/router'
 
 // 判断该路由菜单是否有权限，无roles字段表示该路由都可访问，有roles字段则和服务端做对比，得到该角色是否有该路由权限
 function hasPermission(roles, route) {
@@ -28,7 +28,7 @@ export function filterAsyncRoutes(routes, roles) {
 
 export const { setRoutes } = createActions({
   // 通过服务端返回的 roles 信息，对本地菜单路由配置每一个做对比，得到有权限的访问菜单
-  SET_ROUTES: roles => {
+  SET_ROUTES: roles => new Promise(resolve => {
     let accessedRoutes;
     // 此处可进行权限判断，得到想要的路由。 超级管理员可以得到所有权限，其他登录人员相关有权限的部分可进入
     if(roles.includes('admin')) {
@@ -36,9 +36,11 @@ export const { setRoutes } = createActions({
     } else {
       accessedRoutes = filterAsyncRoutes(asyncMenuRoutes, roles)
     }
-    return {
+    const expandAccessedRoutes = getExpandMenuRoutes(accessedRoutes);
+    resolve({
+      routes: constantRoutes.concat(expandAccessedRoutes),
       accessedRoutes,
-      expandAccessedRoutes: getExpandMenuRoutes(accessedRoutes)
-    }
-  }
+      expandAccessedRoutes
+    })
+  })
 })

@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { Menu, Layout } from 'antd';
 
-
 import './index.scss'
 
 import { getExpandMenuRoutes } from '@/router'
@@ -20,7 +19,7 @@ const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : n
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
-    routes: PropTypes.array,
+    menuRoutes: PropTypes.array,
     collapsed: PropTypes.bool
   }
 
@@ -28,8 +27,8 @@ class BaseMenu extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const { location, routes } = props;
-    const defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
+    const { location, menuRoutes } = props;
+    const defaultOpenKeys = this.getOpenKeys(location.pathname, getExpandMenuRoutes(menuRoutes))
 
     // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
     this.state = {
@@ -60,10 +59,10 @@ class BaseMenu extends React.PureComponent {
         openKeys: []
       })
     } else {
-      const { location, routes } = this.props;
+      const { location, menuRoutes } = this.props;
       // 重新计算展开的 Submenu， 因为在这之前变为 [] 了
       this.setState({
-        openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(routes))
+        openKeys: this.getOpenKeys(location.pathname, getExpandMenuRoutes(menuRoutes))
       })
     }
   }
@@ -133,7 +132,7 @@ class BaseMenu extends React.PureComponent {
   // 根 Submenu 只会展开一个
   onOpenChange = (openKeys=[]) => {
 
-    const { routes } = this.props;
+    const { menuRoutes } = this.props;
     const { openKeys: _openKeys } = this.state;
 
     // 路径 or undefined
@@ -147,8 +146,7 @@ class BaseMenu extends React.PureComponent {
 
 // --------------------------------------------------------------------------------------------------------------------
     // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
-    if(getRootSubmenuKeys(routes).indexOf(latestOpenKey) === -1) {
-      // console.log(111, openKeys)
+    if(getRootSubmenuKeys(menuRoutes).indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys });
     } else {
       // 展开有路径，只会有一个 [path]  or  收起 []
@@ -159,7 +157,7 @@ class BaseMenu extends React.PureComponent {
   }
 
   render() {
-    const { routes, collapsed } = this.props
+    const { menuRoutes, collapsed } = this.props
     const { selectedKeys, openKeys } = this.state;
     return <Sider
       trigger={null}
@@ -173,7 +171,7 @@ class BaseMenu extends React.PureComponent {
         onOpenChange={this.onOpenChange}
         selectedKeys={selectedKeys}
       >
-        {this.getNavMenuItems(routes)}
+        {this.getNavMenuItems(menuRoutes)}
       </Menu>
     </Sider>;
   }

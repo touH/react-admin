@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import { Menu, Dropdown, Modal, Space } from 'antd';
 
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   ExclamationCircleOutlined
 } from '@ant-design/icons';
 
@@ -17,7 +15,7 @@ import { resetToken } from "@/store/modules/user/action";
 
 const Header = props => {
 
-  const { collapsed, setCollapsed, history, resetToken } = props
+  const { history, resetToken } = props
 
   const logout = () => {
     Modal.confirm({
@@ -44,12 +42,6 @@ const Header = props => {
   );
 
   return <div className='header'>
-    {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-      className: 'trigger',
-      onClick: () => {
-        setCollapsed(!collapsed)
-      },
-    })}
     <Dropdown overlay={menu} trigger={['click']}>
       <img className="avatar" src={avatar}/>
     </Dropdown>

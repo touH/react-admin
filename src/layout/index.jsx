@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React  from 'react';
 import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
@@ -28,16 +28,9 @@ const LayoutCompoent = React.memo(props => {
 
   const { menuRoutes, expandMenuRoutes } = props;
 
-  const menuEl = useRef(null);
-
-  const [ collapsed, setCollapsed ] = useState(false)
-
   return <div className='layout'>
     <Layout>
       <SiderMenu
-        {...props}
-        ref={ menuEl }
-        collapsed={ collapsed }
         menuRoutes={ menuRoutes }
         expandMenuRoutes={ expandMenuRoutes }
       />
@@ -45,13 +38,7 @@ const LayoutCompoent = React.memo(props => {
         <Header
           style={{ padding: 0 }}
         >
-          <GlobalHeader
-            collapsed={ collapsed }
-            setCollapsed={ collapsed => {
-              setCollapsed(collapsed)
-              menuEl.current.setOpenKeys(collapsed)
-            }}
-          />
+          <GlobalHeader />
         </Header>
         <TagsView />
         <Content

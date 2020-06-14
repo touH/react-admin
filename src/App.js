@@ -7,7 +7,7 @@ import './App.css'
 import Layout from '@/layout'
 import { constantRoutes, baseName } from '@/router'
 import { getToken } from '@/utils/token'
-import { getterToken, getterRoles, getterMenuRoutes, getterExpandMenuRoutes, getterRoutes } from './store/getters'
+import { getterToken, getterRoles, getterMenuRoutes, getterRoutes } from './store/getters'
 import { getInfo, resetToken } from './store/modules/user/action'
 import { setRoutes } from './store/modules/permission/action'
 import { setActiveRoute } from "./store/modules/app/action";

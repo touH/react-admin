@@ -1,8 +1,14 @@
 import React from "react";
+import { withRouter } from "react-router";
 import PropTypes from 'prop-types';
 import { Menu, Layout } from 'antd';
 
 import './index.scss'
+
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from '@ant-design/icons';
 
 const { SubMenu } = Menu
 const { Sider } = Layout;
@@ -10,16 +16,30 @@ const { Sider } = Layout;
 // 获取Icon
 const getIcon = route => route.meta && route.meta.icon ? <route.meta.icon /> : null
 
-/*
- 一开始使用 withRouter 装饰，来获取路由历史信息，但是现在因为父组件使用 ref 的原因，
- 如果子组件内部还是使用装饰器，使用 ref 会报错，不能使用装饰器装饰组件，所以修改为 通过外部传入 props 的方式来获取路由信息
+/**
+ * @description 当页面刷新或初始化时，如果是 Submenu 菜单，对起相关的 Submenu 进行展开
+ * @param pathname: url string, routes: 所有菜单路由
+ * @return Array<string>   [path, path, path]
  */
+const getOpenKeys = (pathname, routes) => routes.filter(route =>
+  pathname.indexOf(route.path) !== -1 && !!route.meta.isSubmenu
+).map(route => route.path)
+
+/*
+  菜单使用 只能展开一个的效果，这里如果是每次点击只能展开一个的情况，那么在整个菜单收拢时会出现Submenu延迟关闭的bug（官网也有），
+  为了解决这个办法，这里进行了手动设置openKeys，官网是收拢时会默认设置。所以额外写了很多。
+  如果Submenu可以展开多个的话，就不用考虑很多问题，直接使用官网例子就行
+
+  1. 图标 菜单收拢展开
+  2. Menu.Item 和 Submenu 正确显示、递归
+  3. 根据当前路由 location.pathname 对应的 Menu.Item 和 Submenu 展开的问题（样式、状态等）
+ */
+@withRouter
 class BaseMenu extends React.PureComponent {
 
   static propTypes = {
     menuRoutes: PropTypes.array,
     expandMenuRoutes: PropTypes.array,
-    collapsed: PropTypes.bool
   }
 
   // 初始化
@@ -27,24 +47,36 @@ class BaseMenu extends React.PureComponent {
     super(props);
 
     const { location, expandMenuRoutes } = props;
-    const defaultOpenKeys = this.getOpenKeys(location.pathname, expandMenuRoutes)
-
+    const defaultOpenKeys = getOpenKeys(location.pathname, expandMenuRoutes)
     // 刷新或初始化的时候默认 激活的菜单Item和如果是Submenu的相关联展开
     this.state = {
+      collapsed: false,
       selectedKeys: [location.pathname],
       openKeys: defaultOpenKeys,
     }
   }
 
-  // 菜单路由改变 selectedKeys 相应改变
+  // 菜单路由改变 selectedKeys、openKeys 相应改变
   static getDerivedStateFromProps(props, state) {
     const { location } = props;
     const { selectedKeys } = state;
+    /**
+     1. 当前路由和菜单选择项不同时，selectedKeys 更新为当前路由信息
+     2. 当点击tagsView或直接改变url等时（不局限只点击menu item时），菜单的 openKeys 也要根据相应当前路由展开
+     3. 之所以加上一个 state.collapsed 判断时，在 collapsed=true 菜单收拢状态时默认 openKeys为[]，hover 时框架会默认赋值，如果我们进行操作，
+        如在点击tagsView时，收拢的菜单会显示展开部分的信息，所以为了解决这个bug，菜单收拢时就不做处理，按照默认
+     */
     if(location.pathname !== selectedKeys[0]) {
-      return {
+      let newState = {
         selectedKeys: [location.pathname],
-        // openKeys: props.collapsed ? [] : ['/app/permission']
       }
+      if(!state.collapsed) {
+        // 如 点击 tagsView 时，menu item 相关展开的变化
+        const { expandMenuRoutes } = props;
+        const activeOpenKeys = getOpenKeys(location.pathname, expandMenuRoutes);
+        if(activeOpenKeys.length) newState.openKeys = activeOpenKeys
+      }
+      return newState
     } else {
       return null
     }
@@ -54,17 +86,19 @@ class BaseMenu extends React.PureComponent {
    * @description 该函数用于父组件通过点击伸缩按钮，来使菜单伸缩。为什么要这么做？在该组件内部每次菜单伸缩，也会默认触发onOpenChange事件，而每次收缩后openKeys会被默认为[]，在这个过程中会有一闪的显示Submenu的内容，而且菜单伸缩再展开时Submenu也不会展开，因为openKeys为[]。为了解决这个问题，特意使用父组件事件来控制伸缩
    * @param collapsed: Boolean
    */
-  setOpenKeys = collapsed => {
+  setCollapsedOpenKeys = collapsed => {
     // true 关闭  false 展开
-    if(collapsed) {
+    if(!collapsed) {
       this.setState({
-        openKeys: []
+        openKeys: [],
+        collapsed: !collapsed
       })
     } else {
       const { location, expandMenuRoutes } = this.props;
       // 重新计算展开的 Submenu， 因为在这之前变为 [] 了
       this.setState({
-        openKeys: this.getOpenKeys(location.pathname, expandMenuRoutes)
+        openKeys: getOpenKeys(location.pathname, expandMenuRoutes),
+        collapsed: !collapsed
       })
     }
   }
@@ -114,15 +148,6 @@ class BaseMenu extends React.PureComponent {
     }
   }
 
-  /**
-   * @description 当页面刷新或初始化时，如果是 Submenu 菜单，对起相关的 Submenu 进行展开
-   * @param pathname: url string, routes: 所有菜单路由
-   * @return Array<string>   [path, path, path]
-   */
-  getOpenKeys = (pathname, routes) => routes.filter(route =>
-    pathname.indexOf(route.path) !== -1 && !!route.meta.isSubmenu
-  ).map(route => route.path)
-
   // 点击 Item，获取页面
   handleClickItem = (route) => {
     const { history, location } = this.props;
@@ -146,7 +171,7 @@ class BaseMenu extends React.PureComponent {
       route => !route.hidden && route.meta && route.meta.isSubmenu
     ).map(route => route.path)
 
-// --------------------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------
     // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
     if(getRootSubmenuKeys(menuRoutes).indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys });
@@ -159,13 +184,22 @@ class BaseMenu extends React.PureComponent {
   }
 
   render() {
-    const { menuRoutes, collapsed } = this.props
-    const { selectedKeys, openKeys } = this.state;
+    const { menuRoutes} = this.props
+    const { selectedKeys, openKeys, collapsed } = this.state;
     return <Sider
       trigger={null}
       collapsible
       collapsed={collapsed}
     >
+
+      {/*伸缩按钮*/}
+      { React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+        className: 'trigger',
+        onClick: () => {
+          this.setCollapsedOpenKeys(collapsed)
+        },
+      }) }
+
       <Menu
         theme="light"
         mode="inline"

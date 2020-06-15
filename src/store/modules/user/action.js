@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { setToken, removeToken } from '@/utils/token'
 
 //api
-import { request_login, request_getInfo } from '@/api/user'
+`import { request_login, request_getInfo } from '@/services/user'
 
 export const { login, getInfo, resetToken } = createActions({
   LOGIN: async ({ username, password }) => {

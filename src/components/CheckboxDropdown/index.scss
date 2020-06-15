@@ -1,0 +1,18 @@
+.drop-down-menu {
+  .ant-menu {
+    padding: 10px;
+    .ant-menu-item {
+      height: 25px;
+      line-height: 25px;
+    }
+    .btns {
+      button {
+        height: 25px;
+        font-size: 12px;
+      }
+      button:first-child {
+        margin-right: 5px;
+      }
+    }
+  }
+}

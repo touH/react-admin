@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Table, Menu, Dropdown, Checkbox } from 'antd';
+import { Table } from 'antd';
 
 import {
   SettingFilled,
@@ -31,15 +31,33 @@ const columns = [
 ];
 
 const DynamicTable = props => {
-  props.columns.forEach(column => {
-    column.checked = true
-  })
+
+  // 保持原始数据干净
+  const { columns } = props;
+
+  // checkboxColumns 和 tableColumns  会被污染
+  const checkboxColumns = columns.map(column => ({
+    title: column.title,
+    key: column.dataIndex,
+    checked: true
+  }))
+  const tabColumns = JSON.parse(JSON.stringify(columns));
+
+  const [_checkboxColumns, _setCheckboxColumns] = useState(checkboxColumns)
+  const [_tabColumns, _setTabColumns] = useState(tabColumns)
+
+  const selectColumns = checkboxColumns => {
+    _setCheckboxColumns(checkboxColumns)
+    _setTabColumns(columns.filter((column, index) => checkboxColumns[index].checked))
+  }
+
   return <div className='dynamic-table'>
     <CheckboxDropdown
-      columns={props.columns.map(column => ({ title: column.title, key: column.dataIndex }))}
+      columns={_checkboxColumns}
       context={<SettingFilled />}
+      selectColumns={selectColumns}
     />
-    <Table {...props} />
+    <Table {...props} columns={_tabColumns} />
   </div>
 }
 

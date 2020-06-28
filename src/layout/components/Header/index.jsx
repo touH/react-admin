@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from 'react-redux'
-import { Menu, Dropdown, Modal, Space } from 'antd';
+import { Menu, Dropdown, Modal, Space, Layout } from 'antd';
 
 import {
   ExclamationCircleOutlined
@@ -9,13 +9,25 @@ import {
 
 import './index.scss'
 
+import Breadcrumb  from '@/components/Breadcrumb'
+
 import avatar from '@/assets/images/admin.jpg'
 import { resetToken } from "@/store/modules/user/action";
+import { getterMatchRoutes } from "@/store/getters"
 
+const { Header } = Layout;
 
-const Header = props => {
+const mapStateToProps = state => ({
+  matchRoutes: getterMatchRoutes(state),
+})
 
-  const { history, resetToken } = props
+const mapDispatchToProps = {
+  resetToken
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => {
+
+  const { history, location, resetToken, matchRoutes } = props
 
   const logout = () => {
     Modal.confirm({
@@ -41,15 +53,10 @@ const Header = props => {
     </Menu>
   );
 
-  return <div className='header'>
+  return <Header className='header'>
+    <Breadcrumb routes={matchRoutes} />
     <Dropdown overlay={menu} trigger={['click']}>
       <img className="avatar" src={avatar}/>
     </Dropdown>
-  </div>
-}
-
-const mapDispatchToProps = {
-  resetToken
-}
-
-export default withRouter(connect(null, mapDispatchToProps)(Header))
+  </Header>
+}))

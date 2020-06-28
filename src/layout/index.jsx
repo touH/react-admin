@@ -7,12 +7,12 @@ import { Layout } from 'antd';
 import './index.scss'
 
 import SiderMenu from './components/Menu'
-import GlobalHeader from './components/Header'
+import Header from './components/Header'
 import TagsView from './components/TagsView'
 
 import { getterMenuRoutes, getterExpandMenuRoutes } from "@/store/getters";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 // 用于路由递归，生产所有的菜单路由 <Route>
 const renderRoute = (routes=[]) => routes.map(route => <Route
@@ -38,7 +38,6 @@ const LayoutCompoent = React.memo(props => {
         <Header
           style={{ padding: 0 }}
         >
-          <GlobalHeader />
         </Header>
         <TagsView />
         <Content

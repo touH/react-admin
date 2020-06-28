@@ -86,7 +86,7 @@ const addBasename = (basename, routes) => {
 // 需要根据用户角色动态加载的路由，即权限判断
 export const asyncMenuRoutes = addBasename(baseName, [
   {
-    path: '/home/index',
+    path: '/home',
     name: 'Home',
     meta: {
       title: '首页',
@@ -151,6 +151,9 @@ export const getExpandMenuRoutes = routes => {
     return [...totalRoutes, route, ...subs]
   }, [])
 }
+
+// 对于菜单路由，选中的当前菜单路由，获取到它的父级路由信息，即match
+export const getMatchRoutes = (path, extendMenuRoutes) => extendMenuRoutes.filter(route => path.indexOf(route.path) !== -1)
 
 
 

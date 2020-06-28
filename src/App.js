@@ -5,12 +5,12 @@ import { message } from 'antd';
 import path from 'path';
 import './App.css'
 import Layout from '@/layout'
-import { constantRoutes, baseName } from '@/router'
+import { constantRoutes, baseName, getMatchRoutes } from '@/router'
 import { getToken } from '@/utils/token'
 import { getterToken, getterRoles, getterMenuRoutes, getterRoutes } from './store/getters'
 import { getInfo, resetToken } from './store/modules/user/action'
 import { setRoutes } from './store/modules/permission/action'
-import { setActiveRoute } from "./store/modules/app/action";
+import { setActiveRoute, setMatchRoutes } from "./store/modules/app/action";
 
 // 用于路由递归，生产所有的路由配置Route，  之前也可通过 props.children 插槽的方式传递给子组件，这种方式也是可以的
 /*const recursiveRoute = (routes=[]) => {
@@ -39,13 +39,17 @@ function App(props) {
     menuRoutes,
     getInfo,
     setRoutes,
-    setActiveRoute
+    setActiveRoute,
+    setMatchRoutes
   } = props;
 
-  // 在 redux 中 设置当前路由状态
+  // 在 redux 中 设置当前路由信息
   const _setActiveRoute = (routes, path) => {
     const activeRoute = routes.find(route => route.path === path)
+    // redux app 设置当前 route 信息
     setActiveRoute(activeRoute)
+    // redux app 设置当前 route 匹配的match信息
+    setMatchRoutes(getMatchRoutes(path, routes))
   }
 
   // 用于判断用户权限、用户信息被人为清空时做的处理、路由跳转
@@ -86,7 +90,7 @@ function App(props) {
   return (
     <div className='App'>
       <Switch>
-        <Route exact path='/' render={() => <Redirect to={path.join(baseName, '/home/index')} /> }  />
+        <Route exact path='/' render={() => <Redirect to={path.join(baseName, '/home')} /> }  />
         <Route  path={ baseName } component={ App } /> }  />
         { createRoute(constantRoutes) /* 主路由，必显示部分 /login、/redirect、/404、/500 等 hidden */ }
         <Route  path='*' render={() => <Redirect to='/404' /> }  />
@@ -107,7 +111,8 @@ const mapDispatchToProps = {
   getInfo,
   setRoutes,
   resetToken,
-  setActiveRoute
+  setActiveRoute,
+  setMatchRoutes
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -6,7 +6,7 @@ import { Space, Tag, Menu, Dropdown } from 'antd';
 import './index.scss'
 
 import { addVisitedView, delVisitedView, delOthersVisitedViews, delAllVisitedViews } from "@/store/modules/tagsView/action";
-import { getterVisitedViews, getterExpandMenuRoutes } from "@/store/getters";
+import { getterVisitedViews, getterExpandMenuRoutes, getterActiveRoute } from "@/store/getters";
 
 const TagsView = React.memo(props => {
 
@@ -18,6 +18,7 @@ const TagsView = React.memo(props => {
     history ,
     expandMenuRoutes,
     visitedViews,
+    activeRoute,
     addVisitedView,
     delVisitedView,
     delOthersVisitedViews,
@@ -38,7 +39,8 @@ const TagsView = React.memo(props => {
 
   // 选择一个菜单项，tagsView 中增加当前菜单的 tag
   useEffect(() => {
-    const route = expandMenuRoutes.find(route => route.path === location.pathname)
+    // const route = expandMenuRoutes.find(route => route.path === location.pathname)
+    const route = activeRoute
     if(route) {
       addVisitedView({
         path: route.path,
@@ -46,7 +48,7 @@ const TagsView = React.memo(props => {
         meta: { ...route.meta }
       })
     }
-  }, [location.pathname])
+  }, [activeRoute])
 
   // 点击 tag
   const handleClick = route => {
@@ -103,6 +105,7 @@ const TagsView = React.memo(props => {
     }
   }
 
+  // ContextMenu 部分，按钮组
   const menu = (
     <Menu onClick={ handleContextMenu }>
       <Menu.Item key="refresh">Refresh</Menu.Item>
@@ -136,6 +139,7 @@ const TagsView = React.memo(props => {
 const mapStateToProps = state => ({
   expandMenuRoutes: getterExpandMenuRoutes(state),
   visitedViews: getterVisitedViews(state),
+  activeRoute: getterActiveRoute(state)
 })
 const mapDispatchToProps = {
   addVisitedView,

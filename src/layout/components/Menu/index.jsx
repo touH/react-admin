@@ -44,6 +44,7 @@ class BaseMenu extends React.PureComponent {
 
   // 初始化
   constructor(props) {
+
     super(props);
 
     const { location, expandMenuRoutes } = props;
@@ -83,7 +84,7 @@ class BaseMenu extends React.PureComponent {
   }
 
   /**
-   * @description 该函数用于父组件通过点击伸缩按钮，来使菜单伸缩。为什么要这么做？在该组件内部每次菜单伸缩，也会默认触发onOpenChange事件，而每次收缩后openKeys会被默认为[]，在这个过程中会有一闪的显示Submenu的内容，而且菜单伸缩再展开时Submenu也不会展开，因为openKeys为[]。为了解决这个问题，特意使用父组件事件来控制伸缩
+   * @description 在该组件内部每次菜单伸缩，也会默认触发onOpenChange事件，而每次收缩后openKeys会被默认为[]，在这个过程中会有一闪的显示Submenu的内容，而且菜单伸缩再展开时Submenu也不会展开，因为openKeys为[]。
    * @param collapsed: Boolean
    */
   setCollapsedOpenKeys = collapsed => {
@@ -117,8 +118,8 @@ class BaseMenu extends React.PureComponent {
         {this.getNavMenuItems(route.children)}
       </SubMenu>
     } else {
-      // Item 的 路由信息
-      let onlyOneRoute = this.getMenuItem(route.children, route);
+      // Item 的 路由信息（获取最后可点击的 菜单Item 的路由信息）
+      let onlyOneRoute = this.getMenuItemRoute(route.children, route);
       return <Menu.Item
         key={onlyOneRoute.path}
         icon={getIcon(onlyOneRoute)}
@@ -140,7 +141,7 @@ class BaseMenu extends React.PureComponent {
    * @param route     当前Item点击的route信息
    * @return 最后要显示的route信息
    */
-  getMenuItem = (children=[], route) => {
+  getMenuItemRoute = (children=[], route) => {
     if(children.length) {
       return children.filter(item => !item.hidden).pop()
     } else {
@@ -191,7 +192,6 @@ class BaseMenu extends React.PureComponent {
       collapsible
       collapsed={collapsed}
     >
-
       {/*伸缩按钮*/}
       { React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
         className: 'trigger',
@@ -199,16 +199,17 @@ class BaseMenu extends React.PureComponent {
           this.setCollapsedOpenKeys(collapsed)
         },
       }) }
-
-      <Menu
-        theme="light"
-        mode="inline"
-        openKeys={openKeys}
-        onOpenChange={this.onOpenChange}
-        selectedKeys={selectedKeys}
-      >
-        {this.getNavMenuItems(menuRoutes)}
-      </Menu>
+      <div className='menu-container'>
+        <Menu
+          theme="light"
+          mode="inline"
+          openKeys={openKeys}
+          onOpenChange={this.onOpenChange}
+          selectedKeys={selectedKeys}
+        >
+          {this.getNavMenuItems(menuRoutes)}
+        </Menu>
+      </div>
     </Sider>;
   }
 }

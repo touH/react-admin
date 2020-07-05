@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-
+import { connect } from 'react-redux'
 
 const fakeAccounts = [
   {
@@ -15,6 +15,7 @@ const fakeAccounts = [
 ];
 
 class AccountsList extends Component {
+
   state = {
     selectedIndex: 0
   };
@@ -69,9 +70,16 @@ class UncontrolledEmailInput extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {}
+}
 
-export default (props) => {
+export default connect(mapStateToProps)((props) => {
+  const handleClick = () => {
+    console.log(props)
+  }
   return <div>
+    <button onClick={handleClick}>click</button>
     <AccountsList accounts={fakeAccounts} />,
   </div>
-}
+})

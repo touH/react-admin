@@ -18,6 +18,7 @@ import { getterMatchRoutes } from "@/store/getters"
 const { Header } = Layout;
 
 const mapStateToProps = state => ({
+  // match 相匹配的 route
   matchRoutes: getterMatchRoutes(state),
 })
 
@@ -27,7 +28,7 @@ const mapDispatchToProps = {
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => {
 
-  const { history, location, resetToken, matchRoutes } = props
+  const { history, resetToken, matchRoutes } = props
 
   const logout = () => {
     Modal.confirm({
@@ -54,7 +55,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => 
   );
 
   return <Header className='header'>
-    <Breadcrumb routes={matchRoutes} />
+    <Breadcrumb matchRoutes={matchRoutes} />
     <Dropdown overlay={menu} trigger={['click']}>
       <img className="avatar" src={avatar}/>
     </Dropdown>

@@ -1,13 +1,13 @@
 import React, { memo } from "react";
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 import { Breadcrumb, Menu } from 'antd';
+import './index.scss'
 
+const _Breadcrumb = memo(({ matchRoutes }) => {
 
-const _Breadcrumb = memo(({ routes }) => {
-
-  // 数据加载好在渲染
-  if(!routes.length) return
+  // 数据加载好再渲染
+  if(!matchRoutes.length) return
 
   const menu = routes => <Menu>
     {
@@ -21,7 +21,7 @@ const _Breadcrumb = memo(({ routes }) => {
 
   return <Breadcrumb>
     {
-      routes.map(route => {
+      matchRoutes.map(route => {
         return <Breadcrumb.Item
           overlay={(route.meta && route.meta.isSubmenu) && (route.children && route.children.length>0) ? menu(route.children) : null}
           key={route.path}>
@@ -33,7 +33,7 @@ const _Breadcrumb = memo(({ routes }) => {
 })
 
 _Breadcrumb.propTypes = {
-  routes: PropTypes.array
+  matchRoutes: PropTypes.array
 }
 
 export default _Breadcrumb

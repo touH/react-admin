@@ -6,9 +6,9 @@ import { Layout } from 'antd';
 
 import './index.scss'
 
-import SiderMenu from './components/Menu'
-import Header from './components/Header'
-import TagsView from './components/TagsView'
+import MySider from './components/Menu'
+import MyHeader from './components/Header'
+import MyTagsView from './components/TagsView'
 
 import { getterMenuRoutes, getterExpandMenuRoutes } from "@/store/getters";
 
@@ -30,16 +30,13 @@ const LayoutCompoent = React.memo(props => {
 
   return <div className='layout'>
     <Layout>
-      <SiderMenu
+      <MySider
         menuRoutes={ menuRoutes }
         expandMenuRoutes={ expandMenuRoutes }
       />
       <Layout>
-        <Header
-          style={{ padding: 0 }}
-        >
-        </Header>
-        <TagsView />
+        <MyHeader style={{ padding: 0 }} />
+        <MyTagsView />
         <Content
           style={{
             margin: '24px 16px',

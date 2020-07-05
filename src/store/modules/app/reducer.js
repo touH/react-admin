@@ -4,9 +4,9 @@ export const namespace = 'app'
 
 const initState = {
   // 当前路由信息
-  activeRoute: {},
+  activeRoute: null,
   // 当前菜单路由 相关匹配的 父级菜单信息 match
-  matchRoutes: []
+  matchRoutes: [],
 };
 
 export const appReducer = handleActions({

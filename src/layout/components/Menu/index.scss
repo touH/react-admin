@@ -12,9 +12,11 @@
       color: #1890ff;
     }
   }
-  .ant-menu {
-    //min-height: 100%;
-    //overflow-y: auto;
-    user-select: none;
+  .menu-container {
+    height: 100%;
+    overflow-y: auto;
+    .ant-menu {
+      user-select: none;
+    }
   }
 }

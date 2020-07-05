@@ -27,13 +27,15 @@ compose(fn1, fn2):
   }
 */
 
-export default createStore(
+const store = createStore(
   reducers,
   compose(
     applyMiddleware(thunkMiddleware, promiseMiddleware),
     reduxDebug
   )
 )
+
+export default store
 
 
 

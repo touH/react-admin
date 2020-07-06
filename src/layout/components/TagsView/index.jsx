@@ -41,7 +41,7 @@ const TagsView = React.memo(props => {
   useEffect(() => {
     // const route = expandMenuRoutes.find(route => route.path === location.pathname)
     const route = activeRoute
-    if(route) {
+    if(route && route.path === location.pathname) {
       addVisitedView({
         path: route.path,
         name: route.name,

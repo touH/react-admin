@@ -1,13 +1,22 @@
 import React from 'react'
-import { Form, Input, Button, Checkbox } from 'antd';
+import { connect } from 'react-redux'
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './index.scss'
 
-export default () => {
-  const onFinish = values => {
-    console.log('Received values of form: ', values);
+import { login } from '@/store/modules/user/action'
+
+const Login = props => {
+
+  const onFinish = userInfo => {
+    console.log('Received values of form: ', userInfo, props);
+    const { history } = props;
+    props.login(userInfo).then(() => {
+      history.push('/')
+    })
   };
+
 
   return <div className='login-container'>
     <Form
@@ -20,7 +29,7 @@ export default () => {
         name="username"
         rules={[{ required: true, message: 'Please input your Username!' }]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="admin | other" />
       </Form.Item>
       <Form.Item
         name="password"
@@ -41,3 +50,15 @@ export default () => {
     </Form>
   </div>;
 }
+
+const mapStateToProps = state => {
+  return {
+    token: state.user.token
+  }
+}
+
+const mapDispatchToProps = {
+  login
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

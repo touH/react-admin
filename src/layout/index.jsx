@@ -1,43 +1,66 @@
-import React, { useState } from 'react';
+import React  from 'react';
+import { connect } from 'react-redux'
+import { Redirect, Route, Switch } from 'react-router-dom'
+
 import { Layout } from 'antd';
 
 import './index.scss'
 
-import { constantRoutes, asyncRoutes } from '@/router'
+import MySider from './components/Menu'
+import MyHeader from './components/Header'
+import MyTagsView from './components/TagsView'
 
-import _Menu from './components/Menu'
-import  _Header from './components/Header'
+import { getterMenuRoutes, getterExpandMenuRoutes } from "@/store/getters";
 
-const { Header, Sider, Content } = Layout;
+const { Content } = Layout;
 
-export default (props) => {
-  const routes = [...constantRoutes, ...asyncRoutes];
+// 用于路由递归，生产所有的菜单路由 <Route>
+const renderRoute = (routes=[]) => routes.map(route => <Route
+  exact={route.meta.isSubmenu}    // 如果是一个 Submenu 要严格匹配，  如果不加这个 子路由会被 父路由先匹配，如 /a，/a/b，/a 劫持住了
+  path={ route.path }
+  key={ route.path }
+  render={ props =>
+    route.redirect ? <Redirect to={ route.redirect } /> : route.component && <route.component {...route} {...props} />
+  }
+/>)
 
-  const [collapsed, setCollapsed] = useState(false)
+const LayoutCompoent = React.memo(props => {
+
+  const { menuRoutes, expandMenuRoutes } = props;
 
   return <div className='layout'>
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <_Menu routes={routes} />
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{ padding: 0 }}
-        >
-          <_Header collapsed={collapsed} setCollapsed={setCollapsed} />
-        </Header>
+      <MySider
+        menuRoutes={ menuRoutes }
+        expandMenuRoutes={ expandMenuRoutes }
+      />
+      <Layout>
+        <MyHeader style={{ padding: 0 }} />
+        <MyTagsView />
         <Content
-          className="site-layout-background"
           style={{
             margin: '24px 16px',
             padding: 24,
             minHeight: 280,
           }}
         >
-          {props.children}
+          <Switch>
+            { renderRoute(expandMenuRoutes) }
+            <Route  path='*' render={() => <Redirect to='/404' /> }  />
+          </Switch>
         </Content>
       </Layout>
     </Layout>
   </div>
+})
+
+const mapStateToProps = state => ({
+  menuRoutes: getterMenuRoutes(state),
+  expandMenuRoutes: getterExpandMenuRoutes(state),
+})
+
+const mapDispatchToProps = {
+
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutCompoent)

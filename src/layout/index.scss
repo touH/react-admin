@@ -3,11 +3,13 @@
 
   .ant-layout {
     height: 100%;
-  }
 
-  .site-layout {
-    .site-layout-background {
+    .ant-layout-header, .ant-layout-content, .ant-layout-sider {
       background: #fff;
+    }
+
+    .ant-layout-content {
+      overflow-y: auto;
     }
   }
 }

@@ -1,0 +1,22 @@
+.ant-layout-sider {
+  .trigger {
+    position: absolute;
+    right: -30px;
+    top: 3px;
+    z-index: 10;
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color 0.3s;
+    &:hover {
+      color: #1890ff;
+    }
+  }
+  .menu-container {
+    height: 100%;
+    overflow-y: auto;
+    .ant-menu {
+      user-select: none;
+    }
+  }
+}

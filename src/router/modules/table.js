@@ -1,19 +1,11 @@
-import Layout from '@/layout'
-
+import Loading from '@/components/Loading'
+import Loadable from "react-loadable";
 import {
   WindowsOutlined
 } from '@ant-design/icons';
 
-import DynamicTable from '@/pages/table/dynamic-table'
-import PageTable from '@/pages/table/page-table'
-import DragTable from '@/pages/table/drag-table'
-import InlineEditTable from '@/pages/table/inline-edit-table'
-import ScrollTable from '@/pages/table/scroll-table'
-import ComplexTable from '@/pages/table/complex-table'
-
 export default {
   path: '/table',
-  component: Layout,
   redirect: '/table/dynamic-table',
   name: 'Table',
   meta: {
@@ -23,38 +15,56 @@ export default {
   },
   children: [
     {
-      path: 'dynamic-table',
-      component: DynamicTable,
+      path: '/table/dynamic-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/dynamic-table'),
+        loading: Loading
+      }),
       name: 'DynamicTable',
       meta: { title: '选择列' }
     },
     {
-      path: 'page-table',
-      component: PageTable,
+      path: '/table/page-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/page-table'),
+        loading: Loading
+      }),
       name: 'PageTable',
       meta: { title: '分页 Table' }
     },
     {
-      path: 'drag-table',
-      component: DragTable,
+      path: '/table/drag-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/drag-table'),
+        loading: Loading
+      }),
       name: 'DragTable',
       meta: { title: '拖拽 Table' }
     },
     {
-      path: 'inline-edit-table',
-      component: InlineEditTable,
+      path: '/table/inline-edit-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/inline-edit-table'),
+        loading: Loading
+      }),
       name: 'InlineEditTable',
       meta: { title: 'Table 内编辑' }
     },
     {
-      path: 'scroll-table',
-      component: ScrollTable,
+      path: '/table/scroll-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/scroll-table'),
+        loading: Loading
+      }),
       name: 'ScrollTable',
       meta: { title: '滚动加载' }
     },
     {
-      path: 'complex-table',
-      component: ComplexTable,
+      path: '/table/complex-table',
+      component: Loadable({
+        loader: () => import('@/pages/table/complex-table'),
+        loading: Loading
+      }),
       name: 'ComplexTable',
       meta: { title: '综合 Table' }
     },

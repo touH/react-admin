@@ -1,14 +1,11 @@
-import Layout from '@/layout'
-
+import Loading from '@/components/Loading'
+import Loadable from "react-loadable";
 import {
   WindowsOutlined
 } from '@ant-design/icons';
 
-import BaseForm from '@/pages/form/base-form'
-
 export default {
   path: '/form',
-  component: Layout,
   redirect: '/form/base-form',
   name: 'Form',
   meta: {
@@ -19,7 +16,10 @@ export default {
   children: [
     {
       path: '/form/base-form',
-      component: BaseForm,
+      component: Loadable({
+        loader: () => import('@/pages/form/base-form'),
+        loading: Loading
+      }),
       name: 'BaseForm',
       meta: { title: '基础 Form' }
     },

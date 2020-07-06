@@ -2,8 +2,16 @@
  * 状态管理
  */
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+import {
+  all
+} from 'redux-saga/effects'
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-promise';
+
+import userSaga  from './modules/user/saga'
+import permissionSaga from './modules/permission/saga'
+import appSaga from './modules/app/saga'
 
 import { namespace as appNamespace, appReducer } from './modules/app/reducer'
 import { namespace as permissionNamespace, permissionReducer} from './modules/permission/reducer'
@@ -26,14 +34,25 @@ compose(fn1, fn2):
     return a(b.apply(void 0, arguments));
   }
 */
+export const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
   reducers,
   compose(
-    applyMiddleware(thunkMiddleware, promiseMiddleware),
+    applyMiddleware(thunkMiddleware, promiseMiddleware, sagaMiddleware),
     reduxDebug
   )
 )
+
+export function* rootSaga() {
+  yield all([
+    ...appSaga,
+    ...userSaga,
+    ...permissionSaga
+  ])
+}
+
+sagaMiddleware.run(rootSaga);
 
 export default store
 

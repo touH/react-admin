@@ -5,18 +5,13 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './index.scss'
 
-import { login } from '@/store/modules/user/action'
+import { dispatchLogin } from '@/store/modules/user/action'
 
 const Login = props => {
 
   const onFinish = userInfo => {
-    console.log('Received values of form: ', userInfo, props);
-    const { history } = props;
-    props.login(userInfo).then(() => {
-      history.push('/')
-    })
+    props.dispatchLogin(userInfo)
   };
-
 
   return <div className='login-container'>
     <Form
@@ -58,7 +53,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  login
+  dispatchLogin,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

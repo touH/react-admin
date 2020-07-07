@@ -12,9 +12,6 @@ import dialogRouter from "./modules/dialog";
 import formRouter from "./modules/form";
 import nestedRouter from "./modules/nested";
 
-
-export const baseName = '/app';
-
 /*
 hidden: 用于表示该路由是否显示与菜单中，即是否是菜单路由，hidden: true为其他路由，false或者不写为菜单路由
 meta: {
@@ -83,6 +80,9 @@ const addBasename = (basename, routes) => {
   })
   return routes
 }
+
+export const baseName = '/app';
+
 // 需要根据用户角色动态加载的路由，即权限判断
 export const asyncMenuRoutes = addBasename(baseName, [
   {

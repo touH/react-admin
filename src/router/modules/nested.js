@@ -16,10 +16,6 @@ export default {
   children: [
     {
       path: '/nested/menu1',
-      component: Loadable({
-        loader: () => import('@/pages/nested/menu1'),
-        loading: Loading
-      }),
       name: 'Menu1',
       meta: { title: '菜单 1', isSubmenu: true },
       redirect: '/nested/menu1/menu1-1',
@@ -35,10 +31,6 @@ export default {
         },
         {
           path: '/nested/menu1/menu1-2',
-          component: Loadable({
-            loader: () => import('@/pages/nested/menu1/menu1-2'),
-            loading: Loading
-          }),
           name: 'Menu1-2',
           redirect: '/nested/menu1/menu1-2/menu1-2-1',
           meta: { title: '菜单 1-2', isSubmenu: true },

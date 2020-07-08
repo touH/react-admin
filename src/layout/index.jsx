@@ -30,13 +30,13 @@ const LayoutCompoent = React.memo(props => {
 
   return <div className='layout'>
     <Layout>
-      <MySider
-        menuRoutes={ menuRoutes }
-        expandMenuRoutes={ expandMenuRoutes }
-      />
+      {/*<MySider*/}
+      {/*  menuRoutes={ menuRoutes }*/}
+      {/*  expandMenuRoutes={ expandMenuRoutes }*/}
+      {/*/>*/}
       <Layout>
-        <MyHeader style={{ padding: 0 }} />
-        <MyTagsView />
+        {/*<MyHeader style={{ padding: 0 }} />*/}
+        {/*<MyTagsView />*/}
         <Content
           style={{
             margin: '24px 16px',
@@ -45,8 +45,8 @@ const LayoutCompoent = React.memo(props => {
           }}
         >
           <Switch>
-            { renderRoute(expandMenuRoutes) }
-            <Route  path='*' render={() => <Redirect to='/404' /> }  />
+            {/*{ renderRoute(expandMenuRoutes) }*/}
+            {/*<Route  path='*' render={() => <Redirect to='/404' /> }  />*/}
           </Switch>
         </Content>
       </Layout>

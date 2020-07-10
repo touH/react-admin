@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from 'react-redux'
 import { Menu, Dropdown, Modal, Space, Layout } from 'antd';
+import router from '@/router'
 
 import {
   ExclamationCircleOutlined
@@ -12,23 +13,21 @@ import './index.scss'
 import Breadcrumb  from '@/components/Breadcrumb'
 
 import avatar from '@/assets/images/admin.jpg'
-import { resetToken } from "@/store/modules/user/action";
-import { getterMatchRoutes } from "@/store/getters"
+import { dispatchResetToken } from "@/store/modules/user/action";
 
 const { Header } = Layout;
 
 const mapStateToProps = state => ({
-  // match 相匹配的 route
-  matchRoutes: getterMatchRoutes(state),
+
 })
 
 const mapDispatchToProps = {
-  resetToken
+  dispatchResetToken
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => {
 
-  const { history, resetToken, matchRoutes } = props
+  const { location, dispatchResetToken } = props
 
   const logout = () => {
     Modal.confirm({
@@ -37,9 +36,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => 
         <Space align="center"><ExclamationCircleOutlined style={{ fontSize: '25px', color: '#faad14' }} /> 是否确定退出？</Space>
       ),
       onOk() {
-        resetToken().then(() => {
-          history.push('/login')
-        })
+        dispatchResetToken()
       },
     });
   }
@@ -55,7 +52,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => 
   );
 
   return <Header className='header'>
-    <Breadcrumb matchRoutes={matchRoutes} />
+    <Breadcrumb matchRoutes={router.getMatchRoutes(location.pathname)} />
     <Dropdown overlay={menu} trigger={['click']}>
       <img className="avatar" src={avatar}/>
     </Dropdown>

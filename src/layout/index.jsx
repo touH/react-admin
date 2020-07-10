@@ -28,8 +28,8 @@ const LayoutCompoent = React.memo(props => {
         menuData={router.getMenuData()}
       />
       <Layout>
-        {/*<MyHeader style={{ padding: 0 }} />*/}
-        {/*<MyTagsView />*/}
+        <MyHeader style={{ padding: 0 }} />
+        <MyTagsView />
         <Content
           style={{
             margin: '24px 16px',

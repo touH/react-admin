@@ -13,7 +13,7 @@ const _Breadcrumb = memo(({ matchRoutes }) => {
     {
       routes.map(route => {
         return <Menu.Item key={route.path}>
-          <Link to={route.path}>{route.meta && route.meta.title}</Link>
+          <Link to={route.path}>{route.title}</Link>
         </Menu.Item>
       })
     }
@@ -23,9 +23,9 @@ const _Breadcrumb = memo(({ matchRoutes }) => {
     {
       matchRoutes.map(route => {
         return <Breadcrumb.Item
-          overlay={(route.meta && route.meta.isSubmenu) && (route.children && route.children.length>0) ? menu(route.children) : null}
+          overlay={route.children && route.children.length>0 ? menu(route.children) : null}
           key={route.path}>
-          {route.meta && route.meta.title}
+          {route.title}
         </Breadcrumb.Item>
       })
     }

@@ -12,15 +12,21 @@ const dynamicWrapper = (loader) => {
 // 常量路由
 export const constantRouters = [
   {
+    title: 'Login',
     path: '/login',
+    name: 'Login',
     component: dynamicWrapper(() => import('@/pages/login'))
   },
   {
+    title: '404',
     path: '/404',
+    name: '404',
     component: dynamicWrapper(() => import('@/pages/error-page/404'))
   },
   {
+    title: '500',
     path: '/500',
+    name: '500',
     component: dynamicWrapper(() => import('@/pages/error-page/500'))
   }
 ];

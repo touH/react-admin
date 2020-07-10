@@ -20,7 +20,7 @@ const getIcon = menuItem => menuItem.icon ? <menuItem.icon /> : null
  * @param path: url string
  * @return Array<string>   [path, path, path]
  */
-const getOpenKeys = path => router.getMatchRoutes(path).map(route => route.path)
+const getOpenKeys = path => router.getMatchRoutes(path).filter(menuItem => !!menuItem.children).map(route => route.path)
 
 /*
   菜单使用 只能展开一个的效果，这里如果是每次点击只能展开一个的情况，那么在整个菜单收拢时会出现Submenu延迟关闭的bug（官网也有），
@@ -155,10 +155,10 @@ class BaseMenu extends React.PureComponent {
   // 根 Submenu 只会展开一个
   onOpenChange = (openKeys=[]) => {
 
-      const { menuData } = this.props;
-      const { openKeys: _openKeys } = this.state;
+    const { location, menuData } = this.props;
+    const { openKeys: _openKeys } = this.state;
 
-    // 路径 or undefined
+    // 路径 or undefined，当前展开的 Submenu
     const latestOpenKey = openKeys.find(key => _openKeys.indexOf(key) === -1);
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -169,9 +169,17 @@ class BaseMenu extends React.PureComponent {
 
     // --------------------------------------------------------------------------------------------------------------------
     // 不是 Submenu 则可以随意展开， 如果是 Submenu 则只展开一个，并且会将别的展开的包括 子Submenu 全都收起
+    // true 为 内部展开切换， false 为只根 Submenu 之间的切换，或者 当前自己这个Submenu的收拢和展开
     if(getRootSubmenuKeys(menuData).indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys });
     } else {
+      // 同一个 Submenu 时， 展开收拢 也是走这里，当对于多级菜单，点击根Submenu时，展开当前 路径 所匹配的所有 matches
+      if(location.pathname.indexOf(latestOpenKey) !== -1) {
+        this.setState({
+          openKeys: getOpenKeys(location.pathname)
+        });
+        return false
+      }
       // 展开有路径，只会有一个 [path]  or  收起 []
       this.setState({
         openKeys: latestOpenKey ? [latestOpenKey] : [],

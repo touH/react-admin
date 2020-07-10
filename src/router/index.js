@@ -34,7 +34,7 @@ function getFlatMenuData(menus) {
   let flatMenuData = [];
   menus.forEach(item => {
     if(item.children) {
-      flatMenuData = [...flatMenuData, ...getFlatMenuData(item.children)]
+      flatMenuData = [...flatMenuData, item, ...getFlatMenuData(item.children)]
     } else {
       flatMenuData.push(item)
     }
@@ -50,6 +50,11 @@ class Router {
   // 导出所有菜单
   getMenuData() {
     return formatter(menuData, this.baseName)
+  }
+
+  // 导出所有拉平菜单
+  getFlatMenuData() {
+    return getFlatMenuData(this.getMenuData())
   }
 
   // 导出所有 常规 路由

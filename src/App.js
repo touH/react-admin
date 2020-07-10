@@ -49,7 +49,7 @@ function App(props) {
   return (
     <div className='App'>
       <Switch>
-        {/*<Route exact path='/' render={() => <Redirect to={path.join(router.baseName, '/home')} /> }  />*/}
+        <Route exact path='/' render={() => <Redirect to={path.join(router.baseName, '/home')} /> }  />
         <Route  path={ router.baseName } component={ Layout } /> }  />
         { normalRoute(router.getConstantRouterData()) }
         <Route  path='*' render={() => <Redirect to='/404' /> }  />

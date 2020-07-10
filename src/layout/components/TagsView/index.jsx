@@ -2,13 +2,16 @@ import React, {useEffect, useState} from "react";
 import { connect } from 'react-redux'
 import { withRouter } from "react-router";
 import { Space, Tag, Menu, Dropdown } from 'antd';
+import router from '@/router'
 
 import './index.scss'
 
 import { addVisitedView, delVisitedView, delOthersVisitedViews, delAllVisitedViews } from "@/store/modules/tagsView/action";
-import { getterVisitedViews, getterExpandMenuRoutes, getterActiveRoute } from "@/store/getters";
+import { getterVisitedViews, getterActiveRoute } from "@/store/getters";
 
 const TagsView = React.memo(props => {
+
+  console.log(router.getFlatMenuData())
 
   // 右键时的tag信息
   const [ contextMenuTag, setContextMenuTag ] = useState({})
@@ -16,18 +19,18 @@ const TagsView = React.memo(props => {
   const {
     location,
     history ,
-    expandMenuRoutes,
     visitedViews,
-    activeRoute,
     addVisitedView,
     delVisitedView,
     delOthersVisitedViews,
     delAllVisitedViews
   } = props;
 
+  const flatMenuData = router.getFlatMenuData()
+
   // 初始化 默认显示 tagsView的tag有哪些。 meta.affix = true 的 tagsView 中默认是永远显示的
   useEffect(() => {
-    const affixTags = expandMenuRoutes.filter(route => route.meta && route.meta.affix).map(route => ({
+    const affixTags = flatMenuData.filter(route => route.meta && route.meta.affix).map(route => ({
       path: route.path,
       name: route.name,
       meta: { ...route.meta }
@@ -39,8 +42,7 @@ const TagsView = React.memo(props => {
 
   // 选择一个菜单项，tagsView 中增加当前菜单的 tag
   useEffect(() => {
-    // const route = expandMenuRoutes.find(route => route.path === location.pathname)
-    const route = activeRoute
+    const route = flatMenuData.find(route => route.path === location.pathname)
     if(route && route.path === location.pathname) {
       addVisitedView({
         path: route.path,
@@ -48,7 +50,7 @@ const TagsView = React.memo(props => {
         meta: { ...route.meta }
       })
     }
-  }, [activeRoute])
+  }, [location.pathname])
 
   // 点击 tag
   const handleClick = route => {
@@ -129,7 +131,7 @@ const TagsView = React.memo(props => {
           onClick={ () => handleClick(view) }
           onContextMenu={() => setContextMenuTag(view)}
         >
-          { view.meta && view.meta.title }
+          { view.title }
         </Tag>
       </Dropdown>)
     }
@@ -137,9 +139,7 @@ const TagsView = React.memo(props => {
 })
 
 const mapStateToProps = state => ({
-  expandMenuRoutes: getterExpandMenuRoutes(state),
   visitedViews: getterVisitedViews(state),
-  activeRoute: getterActiveRoute(state)
 })
 const mapDispatchToProps = {
   addVisitedView,

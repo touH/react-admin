@@ -23,6 +23,9 @@ export const userReducer = handleActions({
     }
   },
   RESET_TOKEN(state, action) {
-    return initState
+    return {
+      ...state,
+      token: null
+    }
   }
 }, initState)

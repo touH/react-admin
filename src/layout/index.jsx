@@ -1,16 +1,12 @@
 import React  from 'react';
 import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
-
 import { Layout } from 'antd';
-
 import './index.scss'
-
+import router from '@/router'
 import MySider from './components/Menu'
 import MyHeader from './components/Header'
 import MyTagsView from './components/TagsView'
-
-import { getterMenuRoutes, getterExpandMenuRoutes } from "@/store/getters";
 
 const { Content } = Layout;
 
@@ -26,14 +22,11 @@ const renderRoute = (routes=[]) => routes.map(route => <Route
 
 const LayoutCompoent = React.memo(props => {
 
-  const { menuRoutes, expandMenuRoutes } = props;
-
   return <div className='layout'>
     <Layout>
-      {/*<MySider*/}
-      {/*  menuRoutes={ menuRoutes }*/}
-      {/*  expandMenuRoutes={ expandMenuRoutes }*/}
-      {/*/>*/}
+      <MySider
+        menuData={router.getMenuData()}
+      />
       <Layout>
         {/*<MyHeader style={{ padding: 0 }} />*/}
         {/*<MyTagsView />*/}
@@ -55,8 +48,6 @@ const LayoutCompoent = React.memo(props => {
 })
 
 const mapStateToProps = state => ({
-  menuRoutes: getterMenuRoutes(state),
-  expandMenuRoutes: getterExpandMenuRoutes(state),
 })
 
 const mapDispatchToProps = {

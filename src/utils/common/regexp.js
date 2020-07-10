@@ -14,8 +14,14 @@ export const isPhone = (s) => {
 }
 
 //  是否url地址
-export const isURL = (s) => {
-  return /^http[s]?:\/\/.*/.test(s)
+// export const isURL = (s) => {
+//   return /^http[s]?:\/\/.*/.test(s)
+// }
+
+// 是否url地址
+export const isUrl = path => {
+  const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
+  return reg.test(path);
 }
 
 //非零正整数

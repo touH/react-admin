@@ -22,10 +22,11 @@ export const userReducer = handleActions({
       admin
     }
   },
-  RESET_TOKEN(state, action) {
+  LOGIN_OUT(state, action) {
     return {
-      ...state,
-      token: null
+      token: null,
+      roles: [],
+      admin: {}
     }
   }
 }, initState)

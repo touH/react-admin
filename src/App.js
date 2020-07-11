@@ -8,6 +8,7 @@ import router from './router'
 import path from "path";
 import {dispatchGetInfo} from "./store/modules/user/action";
 import {getterRoles} from "./store/getters";
+import Loading from '@/components/Loading'
 
 const normalRoute = (routes=[]) => routes.map(
   route => {
@@ -45,6 +46,9 @@ function App(props) {
       }
     }
   }, [location.pathname])
+
+  // 即如果没有角色信息的话，不进行渲染，要等到获取到用户信息，才进行渲染
+  if(!roles.length && location.pathname !== '/login') return <Loading />
 
   return (
     <div className='App'>

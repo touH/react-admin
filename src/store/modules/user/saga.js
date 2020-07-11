@@ -1,5 +1,5 @@
-import { takeEvery, fork, put, call } from 'redux-saga/effects'
-import {dispatchLogin, login, dispatchGetInfo, getInfo, dispatchResetToken, resetToken} from "./action";
+import { takeEvery, fork, put, call, delay } from 'redux-saga/effects'
+import {dispatchLogin, login, dispatchGetInfo, getInfo, dispatchLoginOut, loginOut} from "./action";
 import { request_login, request_getInfo } from "@/services/user";
 import { setToken, removeToken } from "@/utils/token";
 import { message } from "antd";
@@ -26,6 +26,7 @@ function *sagaGetInfo({ payload }) {
   try {
     const { data } = yield call(request_getInfo, payload)
     if(data.success) {
+      yield delay(2000)
       yield put(getInfo({
         roles: data.data.roles,
         admin: data.data
@@ -35,20 +36,20 @@ function *sagaGetInfo({ payload }) {
     }
   } catch (e) {
     message.error(e);
-    yield put(dispatchResetToken())
+    yield put(dispatchLoginOut())
   }
 }
 
-function *sagaResetToken() {
+function *sagaLoginOut() {
   removeToken()
-  yield put(resetToken())
+  yield put(loginOut())
   history.push('/login')
 }
 
 function* watchCommon() {
   yield takeEvery(dispatchLogin, sagaLogin)
   yield takeEvery(dispatchGetInfo, sagaGetInfo)
-  yield takeEvery(dispatchResetToken, sagaResetToken)
+  yield takeEvery(dispatchLoginOut, sagaLoginOut)
 }
 
 export default [fork(watchCommon)]

@@ -13,7 +13,7 @@ import './index.scss'
 import Breadcrumb  from '@/components/Breadcrumb'
 
 import avatar from '@/assets/images/admin.jpg'
-import { dispatchResetToken } from "@/store/modules/user/action";
+import { dispatchLoginOut } from "@/store/modules/user/action";
 
 const { Header } = Layout;
 
@@ -22,12 +22,12 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  dispatchResetToken
+  dispatchLoginOut
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => {
 
-  const { location, dispatchResetToken } = props
+  const { location, dispatchLoginOut } = props
 
   const logout = () => {
     Modal.confirm({
@@ -36,7 +36,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(props => 
         <Space align="center"><ExclamationCircleOutlined style={{ fontSize: '25px', color: '#faad14' }} /> 是否确定退出？</Space>
       ),
       onOk() {
-        dispatchResetToken()
+        dispatchLoginOut()
       },
     });
   }

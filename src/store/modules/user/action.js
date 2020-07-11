@@ -5,8 +5,8 @@ export const {
   login,
   dispatchGetInfo,
   getInfo,
-  dispatchResetToken,
-  resetToken
+  dispatchLoginOut,
+  loginOut
 } = createActions({
     // 登录
     LOGIN: token => ({ token }),
@@ -15,6 +15,6 @@ export const {
   },
   'DISPATCH_LOGIN',
   'DISPATCH_GET_INFO',
-  'DISPATCH_RESET_TOKEN',
-  'RESET_TOKEN',
+  'DISPATCH_LOGIN_OUT',
+  'LOGIN_OUT',
 );

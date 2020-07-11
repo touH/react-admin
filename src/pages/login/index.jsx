@@ -24,7 +24,7 @@ const Login = props => {
         name="username"
         rules={[{ required: true, message: 'Please input your Username!' }]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="admin | other" />
+        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="admin | user" />
       </Form.Item>
       <Form.Item
         name="password"

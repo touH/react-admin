@@ -10,7 +10,6 @@ export const getterMatchRoutes= state => state[appNamespace].matchRoutes        
 // permission
 export const getterRoutes = state => state[permissionNamespace].routes                          // 所有有权限路由（展开）
 export const getterMenuRoutes = state => state[permissionNamespace].menuRoutes                  // 所有有权限菜单路由（不展开）
-export const getterExpandMenuRoutes = state => state[permissionNamespace].expandMenuRoutes      // 所有有权限菜单路由（展开）
 
 // tagsView
 export const getterVisitedViews = state => state[tagsViewNamespace].visitedViews                // tagsView

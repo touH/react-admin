@@ -7,11 +7,9 @@ import router from '@/router'
 import './index.scss'
 
 import { addVisitedView, delVisitedView, delOthersVisitedViews, delAllVisitedViews } from "@/store/modules/tagsView/action";
-import { getterVisitedViews, getterActiveRoute } from "@/store/getters";
+import { getterVisitedViews } from "@/store/getters";
 
 const TagsView = React.memo(props => {
-
-  console.log(router.getFlatMenuData())
 
   // 右键时的tag信息
   const [ contextMenuTag, setContextMenuTag ] = useState({})
@@ -31,6 +29,7 @@ const TagsView = React.memo(props => {
   // 初始化 默认显示 tagsView的tag有哪些。 meta.affix = true 的 tagsView 中默认是永远显示的
   useEffect(() => {
     const affixTags = flatMenuData.filter(route => route.meta && route.meta.affix).map(route => ({
+      title: route.title,
       path: route.path,
       name: route.name,
       meta: { ...route.meta }
@@ -45,6 +44,7 @@ const TagsView = React.memo(props => {
     const route = flatMenuData.find(route => route.path === location.pathname)
     if(route && route.path === location.pathname) {
       addVisitedView({
+        title: route.title,
         path: route.path,
         name: route.name,
         meta: { ...route.meta }

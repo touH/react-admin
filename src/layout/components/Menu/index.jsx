@@ -8,6 +8,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons';
+import { checkHasPermission } from '@/utils/authority'
 
 const { SubMenu } = Menu
 const { Sider } = Layout;
@@ -36,6 +37,7 @@ class BaseMenu extends React.PureComponent {
 
   static propTypes = {
     menuData: PropTypes.array,
+    roles: PropTypes.array
   }
 
   // 初始化
@@ -99,8 +101,15 @@ class BaseMenu extends React.PureComponent {
     }
   }
 
-  // 返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
-  getNavMenuItems = (menuData=[]) => menuData.filter(menuItem => !menuItem.hidden).map(menuItem => this.getSubMenuOrItem(menuItem))
+  /*
+    返回数组，菜单集合，树，即[SubMenu, Item, ...], 用于在Menu中显示所有菜单
+    1. 首先会过滤掉 要隐藏的菜单
+    2. 再过滤掉当前用户没有权限的菜单，即隐藏
+    3. 判断返回 是 Submenu 还是 Item
+   */
+  getNavMenuItems = (menuData=[]) => menuData.filter(
+    menuItem => !menuItem.hidden && checkHasPermission(menuItem.authority, this.props.roles)
+  ).map(menuItem => this.getSubMenuOrItem(menuItem))
 
   // 判断是 SubMenu 还是 Item， 返回相应的 菜单组件
   getSubMenuOrItem = menuItem => {

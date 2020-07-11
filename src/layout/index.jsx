@@ -4,28 +4,34 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { Layout } from 'antd';
 import './index.scss'
 import router from '@/router'
+import AuthorizedRoute from '@/components/Authorized'
 import MySider from './components/Menu'
 import MyHeader from './components/Header'
 import MyTagsView from './components/TagsView'
+import {getterRoles} from "@/store/getters";
 
 const { Content } = Layout;
 
-// 用于路由递归，生产所有的菜单路由 <Route>
-const renderRoute = (routes=[]) => routes.map(route => <Route
-  exact={route.meta.isSubmenu}    // 如果是一个 Submenu 要严格匹配，  如果不加这个 子路由会被 父路由先匹配，如 /a，/a/b，/a 劫持住了
-  path={ route.path }
-  key={ route.path }
-  render={ props =>
-    route.redirect ? <Redirect to={ route.redirect } /> : route.component && <route.component {...route} {...props} />
-  }
-/>)
+// 渲染生成所有的路由 <Route>
+const renderRoute = (routes=[]) => routes.map(
+  route => <AuthorizedRoute
+    exact
+    path={ route.path }
+    key={ route.path }
+    authority={ route.authority }
+    component={route.component}
+  />
+)
 
-const LayoutCompoent = React.memo(props => {
+const LayoutComponent = React.memo(props => {
+
+  const { roles } = props
 
   return <div className='layout'>
     <Layout>
       <MySider
         menuData={router.getMenuData()}
+        roles={roles}
       />
       <Layout>
         <MyHeader style={{ padding: 0 }} />
@@ -38,8 +44,8 @@ const LayoutCompoent = React.memo(props => {
           }}
         >
           <Switch>
-            {/*{ renderRoute(expandMenuRoutes) }*/}
-            {/*<Route  path='*' render={() => <Redirect to='/404' /> }  />*/}
+            { renderRoute(router.getAppRouterData()) }
+            <Route  path='*' render={() => <Redirect to='/404' /> }  />
           </Switch>
         </Content>
       </Layout>
@@ -48,10 +54,11 @@ const LayoutCompoent = React.memo(props => {
 })
 
 const mapStateToProps = state => ({
+  roles: getterRoles(state)
 })
 
 const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LayoutCompoent)
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutComponent)

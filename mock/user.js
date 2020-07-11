@@ -2,8 +2,8 @@ const tokens = {
   admin: {
     token: 'admin-token'
   },
-  other: {
-    token: 'other-token'
+  user: {
+    token: 'user-token'
   }
 };
 
@@ -13,9 +13,9 @@ const users = {
     introduction: 'I am a super admin',
     name: 'Super Admin'
   },
-  'other-token': {
-    roles: ['other'],
-    introduction: 'I am an other',
+  'user-token': {
+    roles: ['user'],
+    introduction: 'I am an user',
     name: 'Normal Other'
   }
 };

@@ -5,6 +5,7 @@ import { setToken, removeToken } from "@/utils/token";
 import { message } from "antd";
 import history from "@/router/history";
 
+// 登录系统
 function *sagaLogin(action) {
   const { password, username } = action.payload
   try {
@@ -22,11 +23,12 @@ function *sagaLogin(action) {
   }
 }
 
+// 得到用户信息
 function *sagaGetInfo({ payload }) {
   try {
     const { data } = yield call(request_getInfo, payload)
     if(data.success) {
-      yield delay(2000)
+      yield delay(1000)
       yield put(getInfo({
         roles: data.data.roles,
         admin: data.data
@@ -40,6 +42,7 @@ function *sagaGetInfo({ payload }) {
   }
 }
 
+// 退出系统
 function *sagaLoginOut() {
   removeToken()
   yield put(loginOut())

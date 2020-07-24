@@ -114,6 +114,10 @@ export const appRouters = [
 
   // Dialog
   {
+    path: '/dialog/base-dialog',
+    component: dynamicWrapper(() => import('@/pages/dialog/base-dialog'))
+  },
+  {
     path: '/dialog/drag-dialog',
     component: dynamicWrapper(() => import('@/pages/dialog/drag-dialog'))
   },

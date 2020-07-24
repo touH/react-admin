@@ -139,6 +139,11 @@ const menuData = [
     icon: WindowsOutlined,
     children: [
       {
+        title: '基础 Dialog',
+        path: 'base-dialog',
+        name: 'BaseDialog',
+      },
+      {
         title: '拖拽 Dialog',
         path: 'drag-dialog',
         name: 'DragDialog',

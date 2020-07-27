@@ -37,10 +37,9 @@ const __Modal = React.memo(props => {
     onCancel={handleCancel}
     {..._props}
   >
-    <p>
-      点击确定后异步关闭对话框，
-      例如提交表单。
-    </p>
+    <div>
+      {children}
+    </div>
   </Modal>
 })
 

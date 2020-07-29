@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import {
   Button,
   message,
@@ -7,11 +7,16 @@ import {
   Input,
   InputNumber,
   Modal,
-  Divider
+  Divider,
+  Table
 } from 'antd';
 import BaseModal from '@/components/Dialog/BaseModal';
 import AsyncModal from '@/components/Dialog/AsyncModal';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+
+// 内循环弹框
+import InternalBaseDialog from './internal-base-dialog'
+import InternalFormDialog from './internal-form-dialog'
 
 const { confirm } = Modal;
 
@@ -30,14 +35,52 @@ const validateMessages = {
   },
 };
 
+const dataSource = [
+  {
+    key: '1',
+    name: '胡彦斌',
+    age: 32,
+    address: '西湖区湖底公园1号',
+  },
+  {
+    key: '2',
+    name: '胡彦祖',
+    age: 42,
+    address: '西湖区湖底公园1号',
+  },
+];
+
+const columns = [
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '年龄',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: '住址',
+    dataIndex: 'address',
+    key: 'address',
+  },
+];
+
 export default () => {
   // Modal 状态
   const [visible1, setVisible1] = useState(false)
   const [visible2, setVisible2] = useState(false)
   const [visible3, setVisible3] = useState(false)
   const [visible4, setVisible4] = useState(false)
+  const [visible5, setVisible5] = useState(false)
 
   const [form] = Form.useForm()
+
+  // ref
+  const internalBaseDialogRef = useRef(null)
+  const internalFormDialogRef = useRef(null)
 
   // 事件
   const onFinish = values => {
@@ -65,12 +108,31 @@ export default () => {
   }
 
   return <div>
+
+    <Divider>受控 Modal</Divider>
+
     <Space>
       <Button type="primary" onClick={showConfirm}>动态生成 Confirm Modal</Button>
       <Button type="primary" onClick={() => {setVisible1(true)}}>Basic Modal</Button>
       <Button type="primary" onClick={() => {setVisible2(true)}}>Async Modal</Button>
+      <Button type="primary" onClick={() => {setVisible5(true)}}>二次弹框</Button>
+    </Space>
+    <br/>
+    <br/>
+    <Space>
       <Button type="primary" onClick={() => {setVisible3(true)}}>Form Modal</Button>
       <Button type="primary" onClick={() => {setVisible4(true)}}>Table Modal</Button>
+    </Space>
+
+    <Divider>非受控 Modal</Divider>
+
+    <Space>
+      <Button type="primary" onClick={() => {
+        internalBaseDialogRef.current.showModal()
+      }}>Modal</Button>
+      <Button type="primary" onClick={() => {
+        internalFormDialogRef.current.showModal()
+      }}>Form Modal 例子</Button>
     </Space>
 
     {/*********************************** BaseModal ************************************/}
@@ -81,9 +143,7 @@ export default () => {
         message.success('success');
         setVisible1(false)
       }}
-      onCancel={() => {
-        setVisible1(false)
-      }}
+      onCancel={() => setVisible1(false)}
     >
       <p>Some contents...</p>
       <p>Some contents...</p>
@@ -102,16 +162,47 @@ export default () => {
           setVisible2(false)
         }, 2000);
       }}
-      onCancel={() => {
-        setVisible2(false)
-      }}
+      onCancel={() => setVisible2(false)}
     >
-      点击按钮发送异步操作，操作完成关闭Modal
+      <div>点击按钮发送异步操作，操作完成关闭Modal</div>
+      <div>title：标题</div>
+      <div>visible：显示隐藏</div>
+      <div>onOk：确认按钮事件，onCancel：取消按钮事件</div>
+
     </AsyncModal>
+
+    {/*********************************** 二次弹框 ************************************/}
+    <BaseModal
+      title="Basic Modal"
+      visible={visible5}
+      onOk={() => {
+
+        Modal.confirm({
+          title: 'Confirm',
+          icon: <ExclamationCircleOutlined />,
+          content: 'Bla bla ...',
+          okText: '确认',
+          cancelText: '取消',
+          onOk() {
+            message.success('success');
+            setVisible5(false)
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+
+      }}
+      onCancel={() => setVisible5(false)}
+    >
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </BaseModal>
 
     {/*********************************** Form Modal ************************************/}
     <AsyncModal
-      title="Async Modal"
+      title="Form Modal"
       visible={visible3}
       // 调用 loading() 关闭loading
       onOk={loading => {
@@ -138,6 +229,8 @@ export default () => {
       }}
       onCancel={() => {
         setVisible3(false)
+        // 重置表单到初始化
+        form.resetFields();
       }}
     >
       <Form
@@ -169,7 +262,26 @@ export default () => {
       </Form>
     </AsyncModal>
 
-    <Divider />
+    {/*********************************** Table Modal ************************************/}
+    <BaseModal
+      title="Table Modal"
+      visible={visible4}
+      footer={null}
+      onCancel={() => setVisible4(false)}
+    >
+      <Table dataSource={dataSource} columns={columns} />
+    </BaseModal>
 
+
+    {/***********************************
+     ***********************************
+     - 分割线，以下弹框都是内销组件，全部业务都在弹框内部，通过ref外部控制
+     - 如果使用 ref 这种方式，必须使用 class 组件的写法。 函数形式的组件，不能获取到组件实例
+     ***********************************
+     ************************************/
+    }
+
+    <InternalBaseDialog ref={internalBaseDialogRef} />
+    <InternalFormDialog ref={internalFormDialogRef} />
   </div>
 }

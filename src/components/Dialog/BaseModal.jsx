@@ -36,6 +36,8 @@ __Modal.propTypes = {
 __Modal.defaultProps = {
   cancelText: '取消',
   okText: '确定',
+  onOk: () => { alert('请设置取消事件，如无footer，可不设置') },
+  onCancel: () => { alert('请设置取消事件') },
 };
 
 

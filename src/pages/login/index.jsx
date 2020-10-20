@@ -46,14 +46,9 @@ const Login = props => {
   </div>;
 }
 
-const mapStateToProps = state => {
-  return {
-    token: state.user.token
-  }
-}
 
 const mapDispatchToProps = {
   dispatchLogin
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(Login)

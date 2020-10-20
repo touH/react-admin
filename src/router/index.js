@@ -90,6 +90,7 @@ class Router {
   }
 
   // 对于当前路径，返回所有匹配的菜单 matches
+  // 因为如果是没有权限的菜单，直接就是 403 了，所以执行 __recursive(menuData) 就不改了， 按理这个 menuData 应该是做过处理后的有权限菜单，不能是初始化时静态写死的菜单
   getMatchRoutes(path) {
     let matches = [];
     const __recursive = data => {

@@ -54,7 +54,7 @@ function App(props) {
     <div className='App'>
       <Switch>
         <Route exact path='/' render={() => <Redirect to={path.join(router.baseName, '/home')} /> }  />
-        <Route  path={ router.baseName } component={ Layout } /> }  />
+        <Route  path={ router.baseName } component={ Layout }  />
         { normalRoute(router.getConstantRouterData()) }
         <Route  path='*' render={() => <Redirect to='/404' /> }  />
       </Switch>
@@ -72,4 +72,4 @@ const mapDispatchToProps = {
   dispatchGetInfo
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App))
